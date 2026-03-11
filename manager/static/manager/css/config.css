@@ -1,0 +1,24 @@
+/* Smooth transitions for expand/collapse (Akordiyon Animasyonu) */
+.expandable {
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-in-out;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+.expandable.open {
+    max-height: 1500px; /* İçeriğin sığması için yeterince büyük bir değer */
+    opacity: 1;
+    overflow: visible;
+}
+
+/* Custom Scrollbar (Özel Kaydırma Çubuğu) */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f8fafc; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Tooltip (Bilgi Baloncuğu) Efektleri */
+.group:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

@@ -1,0 +1,18 @@
+# Çevresel değişkenler ve gizli şifreler
+.env
+manager/.env
+
+# Python sanal ortam klasörleri (Yüksek boyutlu dosyalar)
+venv/
+manager/venv/
+
+# Python önbellek dosyaları
+__pycache__/
+*.pyc
+*/__pycache__/
+
+# Yerel Veritabanı
+db.sqlite3
+
+# Üretilen medya dosyaları ve görseller
+media/

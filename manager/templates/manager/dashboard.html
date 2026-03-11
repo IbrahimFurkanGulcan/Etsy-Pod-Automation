@@ -1,0 +1,227 @@
+{% load static %} <!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Etsy Ai Design Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'manager/css/style.css' %}">
+    
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Navbar / Banner -->
+    <header class="bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-md">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider cursor-pointer" onclick="window.location.href='/dashboard/'">
+                <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Etsy Ai Design Automation
+            </h1>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="/dashboard/" class="hover:text-orange-200 transition font-medium">Ana Sayfa</a>
+                
+                <a href="{% url 'history' %}" class="hover:text-orange-200 transition font-medium">Geçmiş Analizler</a>
+                
+                <a href="{% url 'config_page' %}" class="hover:text-orange-200 transition font-medium">Ayarlar (Config)</a>
+
+                <a href="/logout/" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition shadow-sm flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Çıkış Yap
+                </a>
+            </nav>
+
+            <div class="md:hidden">
+                <a href="/logout/" class="text-white text-xl"><i class="fa-solid fa-right-from-bracket"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana İçerik Alanı -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- ================= SAYFA 1: ANALİZ ALANI ================= -->
+        <section id="page-analyze" class="space-y-8">
+            
+            <!-- URL Giriş Kartı -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <label for="etsy-url" class="block text-sm font-medium text-gray-700 mb-2">
+                    Analiz etmek istediğiniz ürünün linkini buraya yapıştırın (Test URL: https://www.etsy.com/listing/123):
+                </label>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="relative flex-grow">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">URL:</span>
+                        <input type="url" id="etsy-url" value="" placeholder="https://www.etsy.com/listing/..." 
+                            class="block w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-orange-500 focus:border-orange-500 transition shadow-sm">
+                    </div>
+                    <button id="btn-analyze" onclick="analyzeProduct()" 
+                        class="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-8 rounded-lg transition shadow-md flex items-center justify-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-magnifying-glass"></i> Analyze
+                    </button>
+                </div>
+                <!-- Hata Mesajı Alanı -->
+                <div id="error-message" class="hidden mt-4 p-4 bg-red-50 text-red-600 rounded-lg border border-red-100 text-sm">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i> <span id="error-text">Veri bulunamadı.</span>
+                </div>
+            </div>
+
+            <!-- Yükleniyor Göstergesi -->
+            <div id="loading-analyze" class="hidden flex flex-col items-center justify-center py-12">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl text-orange-500 mb-4"></i>
+                <p class="text-gray-500">Veritabanından ürün bilgileri çekiliyor...</p>
+            </div>
+
+            <!-- Analiz Sonuçları (Başlangıçta Gizli, Dinamik Doldurulacak) -->
+            <div id="analyze-results" class="hidden fade-in bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex flex-col md:flex-row gap-8">
+                    <!-- Ürün Görseli -->
+                    <div class="md:w-1/3 flex flex-col items-center">
+                        <img id="res-image" src="" alt="Ürün Görseli" class="w-full rounded-lg shadow-md zoomable object-cover h-64 md:h-80" onclick="openModal(this.src)">
+                        <span class="text-xs text-gray-400 mt-2"><i class="fa-solid fa-magnifying-glass-plus"></i> Büyütmek için tıklayın</span>
+                    </div>
+
+                    <!-- Ürün Detayları -->
+                    <div class="md:w-2/3 space-y-4">
+                        <h2 id="res-title" class="text-2xl font-bold text-gray-800"></h2>
+                        <div class="flex items-center gap-4 text-sm flex-wrap" id="res-stats">
+                            <!-- Dinamik İstatistikler Buraya Gelecek -->
+                        </div>
+                        
+                        <div>
+                            <h3 class="font-semibold text-gray-700 border-b pb-1 mb-2">Description</h3>
+                            <div id="res-desc" class="text-gray-600 text-sm h-32 overflow-y-auto pr-2 bg-gray-50 p-3 rounded border">
+                                <!-- Dinamik Açıklama -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-gray-700 border-b pb-1 mb-2">Tags</h3>
+                            <div id="res-tags" class="flex flex-wrap gap-2">
+                                <!-- Dinamik Tagler -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Generate Butonu (Sadece Veri Varsa Görünür) -->
+                <div class="mt-8 pt-6 border-t border-gray-100 flex justify-end">
+                    <button id="btn-generate" onclick="goToGeneratePage()" 
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-md flex items-center gap-2 text-lg">
+                        <i class="fa-solid fa-robot"></i> Generate Designs
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SAYFA 2: ÜRETİM VE İŞLEME ALANI ================= -->
+        <section id="page-generate" class="hidden space-y-8">
+            
+            <button onclick="goToAnalyzePage()" class="text-gray-500 hover:text-orange-600 transition flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-arrow-left"></i> Analize Dön
+            </button>
+
+            <!-- Adım 1: Üretilen Görseller -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 fade-in">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2"><i class="fa-regular fa-images text-indigo-500 mr-2"></i>1. Aşama: Yapay Zeka Tasarımları</h2>
+                <p class="text-sm text-gray-500 mb-6">Veritabanından çekilen tasarımlar. İşlemek istediklerinizi seçin.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="generated-images-container">
+                    <!-- Dinamik Olarak Doldurulacak -->
+                </div>
+                <button id="regenerate-button" class="hidden mt-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition-all">
+                <i class="fa-solid fa-rotate-right mr-2"></i> Beğenmedim, Yeniden Üret (API)
+                </button>
+                <div class="mt-6 flex justify-center">
+                    <button onclick="processSelectedImages()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-gears"></i> Process Selected
+                    </button>
+                </div>
+            </div>
+
+            <!-- İşleme Yükleniyor -->
+            <div id="loading-process" class="hidden flex flex-col items-center justify-center py-6">
+                <i class="fa-solid fa-cog fa-spin text-3xl text-blue-500 mb-2"></i>
+                <p class="text-gray-500 text-sm">Seçili görseller işleniyor...</p>
+            </div>
+
+            <!-- Adım 2: İşlenen Görseller -->
+            <div id="processed-section" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100 fade-in">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2"><i class="fa-solid fa-layer-group text-blue-500 mr-2"></i>2. Aşama: İşlenmiş Görseller</h2>
+                <p class="text-sm text-gray-500 mb-6">Listelemeye hazır hale getirilmiş son görseller. Tag ve Title üretmek istediklerinizi seçin.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center" id="processed-images-container">
+                    <!-- Dinamik Olarak Doldurulacak -->
+                </div>
+
+                <div class="mt-6 flex justify-center">
+                    <button onclick="generateTagAndTitle()" 
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-8 rounded shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-tags"></i> Generate Tag & Title
+                    </button>
+                    <button id="regen-seo-btn" class="hidden mt-4 bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-lg font-medium transition-all">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> Beğenmedim, Yeni SEO Üret
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tag/Title Yükleniyor -->
+            <div id="loading-tags" class="hidden flex flex-col items-center justify-center py-6">
+                <i class="fa-solid fa-keyboard fa-bounce text-3xl text-emerald-500 mb-2"></i>
+                <p class="text-gray-500 text-sm">SEO uyumlu başlık ve etiketler DB'den alınıyor...</p>
+            </div>
+
+            <!-- Adım 3: SEO Çıktıları ve Export -->
+            <div id="seo-section" class="hidden bg-white p-6 rounded-xl shadow-sm border border-gray-100 fade-in">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2"><i class="fa-solid fa-file-lines text-emerald-500 mr-2"></i>3. Aşama: SEO Çıktıları ve Dışa Aktarım</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Generated Title</label>
+                        <textarea id="output-title" rows="3" class="w-full p-3 border border-gray-300 rounded bg-gray-50 text-gray-800 focus:ring-emerald-500 focus:border-emerald-500" readonly></textarea>
+                        <div class="flex justify-end mt-1">
+                            <button onclick="copyText('output-title')" class="text-xs text-blue-600 hover:text-blue-800"><i class="fa-regular fa-copy"></i> Kopyala</button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Generated Tags</label>
+                        <textarea id="output-tags" rows="3" class="w-full p-3 border border-gray-300 rounded bg-gray-50 text-gray-800 focus:ring-emerald-500 focus:border-emerald-500" readonly></textarea>
+                        <div class="flex justify-end mt-1">
+                            <button onclick="copyText('output-tags')" class="text-xs text-blue-600 hover:text-blue-800"><i class="fa-regular fa-copy"></i> Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-t pt-6 flex flex-col items-center bg-gray-50 rounded p-6">
+                    <p class="text-sm text-gray-600 mb-4 text-center">Tüm işlemleri tamamladınız. Seçili görselleri ve SEO verilerini klasör mantığıyla indirebilirsiniz.</p>
+                    <button onclick="exportData()" 
+                        class="bg-gray-800 hover:bg-black text-white font-bold py-4 px-12 rounded-lg transition shadow-xl flex items-center gap-3 text-lg transform hover:-translate-y-1">
+                        <i class="fa-solid fa-download"></i> Export Project
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-auto py-6">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            &copy; 2026 Etsy Ai Design Automation. Tüm hakları saklıdır. Dinamik Veri Modeli.
+        </div>
+    </footer>
+
+    <!-- GÖRSEL BÜYÜTME MODALI -->
+    <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-90 hidden z-50 flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <button onclick="closeModal()" class="absolute top-6 right-6 text-white text-4xl hover:text-gray-300 transition focus:outline-none">
+            &times;
+        </button>
+        <img id="modal-image" src="" class="max-w-full max-h-[90vh] object-contain rounded shadow-2xl">
+    </div>
+
+    <!-- JAVASCRIPT MANTIĞI -->
+    <script src="{% static 'manager/js/dashboard.js' %}"></script>
+
+</body>

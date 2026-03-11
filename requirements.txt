@@ -1,0 +1,6 @@
+django>=4.2
+playwright
+pillow
+python-dotenv
+replicate
+requests

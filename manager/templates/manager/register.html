@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol | AI Yöneticisi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#4F46E5', secondary: '#10B981', dark: '#1E293B' } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen py-10">
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-slate-900">Sisteme Katılın</h1>
+            <p class="text-sm text-slate-500 mt-1">Kendi AI boru hattınızı oluşturmaya başlayın.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100 text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'register' %}" class="space-y-5">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Kullanıcı Adı</label>
+                <input type="text" name="username" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-shadow">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Şifre</label>
+                <input type="password" name="password" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-shadow">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Şifre (Tekrar)</label>
+                <input type="password" name="password_confirm" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-primary outline-none transition-shadow">
+            </div>
+            <button type="submit" class="w-full bg-primary hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium transition-colors shadow-sm">
+                Kayıt Ol ve Başla
+            </button>
+        </form>
+        <p class="text-center text-sm text-slate-500 mt-6">
+            Zaten üye misiniz? <a href="{% url 'login' %}" class="text-primary hover:underline font-medium">Giriş Yapın</a>
+        </p>
+    </div>
+</body>
+</html>
