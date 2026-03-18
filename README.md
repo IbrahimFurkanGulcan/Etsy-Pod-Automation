@@ -9,21 +9,42 @@ AI ile tişört veya kupa tasarımı üretirken en büyük sorun, hangi tasarım
 
 ---
 
+<img width="2542" height="1295" alt="Ekran görüntüsü 2026-03-19 005413" src="https://github.com/user-attachments/assets/13464c0a-e0e9-4bca-8a75-c15edf11556d" />
+
+<img width="2557" height="1390" alt="Ekran görüntüsü 2026-03-19 005430" src="https://github.com/user-attachments/assets/0357d6db-2f7a-4f40-be7e-b06b04297ee4" />
+
+
+
 ## ⚙️ İŞ AKIŞI VE ÖZELLİKLER
 
 * **🔍 1. Akıllı Analiz (Playwright):** Etsy ürün URL'si girilir. Ürünün görseli, başlığı, görüntülenme, favori ve yorum sayıları anında çekilir. *(Not: Mevcut sistemde etiketler, "Explore more related searches" alanından referans olarak alınmaktadır.)*
 
+  <img width="2545" height="1401" alt="Ekran görüntüsü 2026-03-19 005529" src="https://github.com/user-attachments/assets/8f1778ba-cb60-4ed1-8cd7-3c43ef8795a5" />
+
+
 * **✂️ 2. Tasarım İzolasyonu (Grounding DINO):**
   Ürün üzerindeki asıl tasarım (grafik/yazı) yapay zeka ile tespit edilir ve tişörtten/kıyafetten kusursuzca kırpılır. AI'ın "tişört içinde tişört" çizme halüsinasyonu kesin olarak engellenir.
+
+  <img width="1520" height="1532" alt="Başlıksız-1" src="https://github.com/user-attachments/assets/adb9b1cf-6ba4-44b6-a9c3-5c61197bd606" />
+
 
 * **🧠 3. AI Varyasyon Üretimi (Replicate API):**
   Kullanıcının seçtiği AI modelleri (örn: Flux, Stable Diffusion vb.) ve özel promptlar kullanılarak kırpılan tasarımın benzersiz yeni varyasyonları ve geliştirilmiş halleri üretilir.
 
+  <img width="2559" height="1272" alt="Ekran görüntüsü 2026-03-19 005542" src="https://github.com/user-attachments/assets/2a76cbe4-9b12-446f-b3be-4f54689789a1" />
+
+
 * **✨ 4. Görüntü İşleme (Upscale & BG Removal):**
   Üretilen tasarımların arka planları (Background Removal) otomatik olarak silinir. Düşük çözünürlüklü çıktılar için Upscale (Netleştirme) desteği sunulur. *(İpucu: En iyi sonuç için Upscale işlemi arka plan silinmeden ÖNCE yapılmalıdır).*
 
+  <img width="2490" height="718" alt="Ekran görüntüsü 2026-03-19 005603" src="https://github.com/user-attachments/assets/b548ee29-0eac-4b07-b01d-89f28f68f01d" />
+
+
 * **📈 5. AI SEO Üretimi:**
   Analiz edilen ürünün verileri GPT/LLM modelleriyle harmanlanarak ürüne özel, yüksek aranma hacimli yeni bir Title (Başlık) ve Tags (Etiketler) üretilir.
+
+  <img width="2559" height="688" alt="Ekran görüntüsü 2026-03-19 005618" src="https://github.com/user-attachments/assets/53f12018-e008-45c6-bac6-3abbcc76f615" />
+
 
 * **📥 6. Export (Dışa Aktarım):**
   Üretilen PNG tasarımlar ve SEO metinleri tek tıkla projenize indirilir.
