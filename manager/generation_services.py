@@ -1,6 +1,8 @@
 import os
 import requests
 import replicate
+import base64        
+import mimetypes
 from django.core.files.base import ContentFile
 from .models import DesignVariation
 
@@ -94,7 +96,21 @@ class ModelRegistry:
                 "output_type": "stream"     # Akış döner
             },
             "default_params": { "temperature": 0.5, "max_completion_tokens": 512 }
-        }
+        },
+
+        # --- VİZYON / GÖRSEL ANALİZ MODELLERİ ---
+        "gpt-4o-vision": {
+            "platform": "replicate",
+            "endpoint": "openai/gpt-4o", # Replicate'te gpt-4o görsel destekler
+            "schema": {
+                "prompt_key": "prompt",
+                "system_prompt_key": "system_prompt",
+                "image_key": "image_input",        # Evrensel motorumuz bu key'i görünce resmi gönderecek!
+                "image_is_list": True,
+                "output_type": "stream",                
+            },
+            "default_params": { "temperature": 0.3, "max_tokens": 512 } # Analiz için temperature düşük tutuldu
+        },
     }
 
     @classmethod
@@ -102,10 +118,6 @@ class ModelRegistry:
         return cls.MODELS.get(model_id)
 
 
-# =====================================================================
-# 2. SINIF: PROMPT MANAGER
-# Modeller için varsayılan sistem istemlerinin tutulduğu kütüphane.
-# =====================================================================
 # =====================================================================
 # 2. SINIF: PROMPT MANAGER
 # Modeller için varsayılan sistem ve kullanıcı istemlerinin kütüphanesi.
@@ -122,36 +134,131 @@ class PromptManager:
         "grounding-dino": "printed graphic design",
         
         # --- SEO (LLM) ---
-        "gpt-4o": "Original Listing Title: '{title}'\nOriginal Tags: '{tags}'\n\nBased on these details, generate the SEO data for a new '{niche}' design following all the system prompt rules."
+        "gpt-4o": "Original Listing Title: '{title}'\nOriginal Tags: '{tags}'\n\nBased on these details, generate the SEO data for a new '{niche}' design following all the system prompt rules.",
+        
+        # --- VISION AI (GÖRSEL ANALİZ) ---
+        "gpt-4o-vision": "Analyze this t-shirt graphic design in detail. Provide a highly descriptive, SEO-rich summary detailing the niche, main objects, colors, typography/text, art style, and overall theme. Do not use conversational filler.",
         
         # Not: Upscale ve BG Removal modelleri prompt kullanmadığı için buraya eklenmedi.
+
     }
 
     # 2. SİSTEM PROMPTLARI (System Prompts - Sadece LLM'ler için)
     DEFAULT_SYSTEM_PROMPTS = {
-        "gpt-4o": """You are an expert e-commerce and Etsy SEO consultant. Your objective is to maximize search visibility based on the provided original listing data.
-
-Strictly adhere to the following rules:
+    "gpt-4o_title": """You are an expert Etsy SEO consultant. Your ONLY task is to generate a listing TITLE.
 
 [TITLE RULES]
 - Maximum 140 characters in total.
 - Maximum 14 words in total.
 - Do not repeat any words in the title.
-- Strictly avoid subjective, emotional, or promotional adjectives (e.g., "funny", "cute", "beautiful", "amazing", "great"). Be purely objective and descriptive.
+- Strictly avoid subjective, emotional, or promotional adjectives
+  (e.g., "funny", "cute", "beautiful", "amazing", "great").
+- Be purely objective and descriptive.
+
+[OUTPUT FORMAT]
+- Return ONLY a valid JSON object. No markdown, no explanations.
+- Exact structure: {"new_title": "..."}""",
+
+    "gpt-4o_tag": """You are an expert Etsy SEO consultant. Your ONLY task is to generate listing TAGS.
 
 [TAGS RULES]
 - Generate exactly 13 tags.
-- Each tag MUST be descriptive of the design.
+- Each tag MUST describe the design.
 - Each tag MUST NOT exceed 20 characters (including spaces).
-- Prioritize multi-word phrases over single words to maximize keyword diversity within the 20-character limit (e.g., instead of using "mother", "cat", and "sassy" as three separate tags, combine them into one tag like "sassy cat mum").
-- Separate the 13 tags with commas in the JSON output.
+- Prioritize multi-word phrases over single words to maximize keyword diversity
+  (e.g., "sassy cat mum" instead of "mother", "cat", "sassy" separately).
+- Separate tags with commas.
 
 [OUTPUT FORMAT]
-- You must return ONLY a valid JSON object. Do not include markdown formatting (like ```json), explanations, warnings, or conversational text.
-- The JSON structure must be exactly:
-{"new_title": "...", "new_tags": "tag1, tag2, tag3...", "focus_keyword": "..."}
-"""
-    }
+- Return ONLY a valid JSON object. No markdown, no explanations.
+- Exact structure: {"new_tags": "tag1, tag2, tag3..."}""",
+
+    "gpt-4o-vision": """# System Prompt: POD Visual SEO Analyst
+
+## Role & Objective
+You are an expert **Print-on-Demand (POD) visual analyst** specializing in Etsy SEO optimization for t-shirt designs. Your sole function is to analyze a provided t-shirt graphic design image and produce a structured, highly descriptive reference text that will directly feed an SEO keyword generation pipeline.
+
+---
+
+## Analysis Dimensions
+Examine the image across **all of the following dimensions** without exception:
+
+| Dimension | What to Extract |
+|---|---|
+| **Niche / Theme** | Core subject matter, target audience, cultural references, seasonal relevance |
+| **Main Objects** | Every identifiable graphic element (characters, animals, symbols, icons, plants, objects) |
+| **Color Palette** | Dominant colors, accent colors,ignore background tone — use precise color names (e.g. *burnt orange*, *slate blue*, *off-white*) |
+| **Typography / Text** | Exact text content (if any), font style (serif/sans-serif/script/handwritten/bold/italic), lettering effects (distressed, outlined, shadowed) |
+| **Art Style** | Illustration style descriptor (e.g. *vintage retro*, *minimalist line art*, *watercolor*, *cartoon*, *cottagecore*, *cyberpunk*, *gothic*, *boho*) |
+| **Texture / Effects** | Grunge, halftone, grain, distressed, flat, glossy, hand-drawn feel |
+| **Mood / Tone** | Emotional atmosphere (e.g. *humorous*, *nostalgic*, *dark*, *wholesome*, *edgy*, *inspirational*) |
+| **Composition** | Layout style (centered badge, all-over print, left-chest, typographic poster, etc.) |
+
+---
+
+## Output Format
+Return **only** the following structured output. No greetings, no explanations, no filler text.
+
+```
+NICHE: <1–3 word niche label, e.g. "Fishing Humor", "Cat Mom", "Vintage Hiking">
+
+THEME SUMMARY: <1 dense sentence describing the overall concept and target audience>
+
+OBJECTS: <comma-separated list of all visual elements>
+
+COLORS: <comma-separated precise color names>
+
+TYPOGRAPHY: <"None" OR exact text in quotes + font style descriptor>
+
+ART STYLE: <2–4 style descriptors, comma-separated>
+
+TEXTURE/EFFECTS: <descriptors or "Clean/Flat">
+
+MOOD: <2–3 mood descriptors>
+
+COMPOSITION: <layout description>
+
+SEO REFERENCE PARAGRAPH: <A 2–3 sentence, keyword-dense descriptive paragraph written for an SEO algorithm — NOT for a human reader. Pack in niche terms, style words, occasion words, and audience descriptors. No filler. No first-person.>
+```
+
+---
+
+## Rules & Constraints
+- **Never** use conversational openers ("Sure!", "Great image!", "I can see…").
+- **Never** omit a dimension — if something is not present, write `None` or `N/A`.
+- The `SEO REFERENCE PARAGRAPH` must read like a dense metadata string, not a product description.
+- Use **American English** spelling throughout.
+- If text appears in the design, quote it **exactly** as it appears.
+- Infer **implied audience** when possible (e.g. dog lovers, gym goers, teachers, gamers).
+- Flag **seasonal or occasion relevance** inside the Theme Summary when applicable (Christmas, Halloween, Father's Day, etc.).
+- Always treat the background as transparent.
+
+---
+
+## Example Output
+
+```
+NICHE: Vintage Camping
+
+THEME SUMMARY: Retro-styled wilderness graphic targeting outdoor enthusiasts and nature lovers, suitable for gift searches around Father's Day and summer adventure seasons.
+
+OBJECTS: mountain range, pine trees, crescent moon, stars, vintage banner ribbon, compass rose
+
+COLORS: burnt orange, forest green, cream white, dark navy, mustard yellow
+
+TYPOGRAPHY: "INTO THE WILD" — all-caps distressed serif font with inline shadow effect
+
+ART STYLE: vintage retro, Americana, badge illustration, hand-lettered
+
+TEXTURE/EFFECTS: distressed overlay, halftone dots, aged grain texture
+
+MOOD: nostalgic, adventurous, rugged
+
+COMPOSITION: centered circular badge with banner text above and below
+
+SEO REFERENCE PARAGRAPH: Vintage retro camping t-shirt design featuring a distressed mountain and pine tree badge with crescent moon, rendered in burnt orange, forest green, and mustard yellow on a dark navy field. Hand-lettered all-caps serif typography reads "INTO THE WILD" with aged halftone texture and Americana badge composition. Ideal for outdoor lovers, hikers, campers, nature gift, Father's Day shirt, adventure tee, wilderness graphic, national park apparel.
+```""",
+}
 
     @classmethod
     def get_prompt(cls, model_id, custom_prompt=None):
@@ -204,26 +311,46 @@ class UniversalAIClient:
         try:
             # 2. Dosya Yönetimi (Şemaya göre dinamik paketleme)
             if file_path and os.path.exists(file_path) and schema.get("image_key"):
-                file_obj = open(file_path, "rb")
                 
-                # Eğer model resmi [file] şeklinde liste olarak bekliyorsa (Seedream, Flux vb.)
-                if schema.get("image_is_list"):
-                    payload[schema["image_key"]] = [file_obj]
+                # EĞER MODEL BASE64 İSTİYORSA (GPT-4o Vision gibi)
+                if schema.get("send_as_base64"):
+                    # Dosya formatını bul (png, jpeg vb.)
+                    mime_type, _ = mimetypes.guess_type(file_path)
+                    mime_type = mime_type or 'image/png'
+                    
+                    # 1. KURALIN: Resmi oku ve base64'e çevir
+                    with open(file_path, "rb") as f:
+                        encoded_string = base64.b64encode(f.read()).decode('utf-8')
+                        
+                    # 2. KURALIN: data URL formatı (ÇOK önemli olan o prefix)
+                    data_uri = f"data:{mime_type};base64,{encoded_string}"
+                    
+                    # 3. KURALIN: image_input -> liste olmalı
+                    if schema.get("image_is_list"):
+                        payload[schema["image_key"]] = [data_uri]
+                    else:
+                        payload[schema["image_key"]] = data_uri
+                
+                # EĞER MODEL NORMAL DOSYA İSTİYORSA (Flux, Bg-Remover gibi eski sistem)
                 else:
-                    payload[schema["image_key"]] = file_obj
+                    file_obj = open(file_path, "rb")
+                    if schema.get("image_is_list"):
+                        payload[schema["image_key"]] = [file_obj]
+                    else:
+                        payload[schema["image_key"]] = file_obj
 
             # 3. API'yi Tetikle
             print(f"🚀 Çalışıyor: {config['endpoint']} (Model: {model_id})")
             
-            # self.client senin Replicate client nesnen ise onu kullan, değilse direkt replicate.run
+            # self.client üzerinden çağırıyoruz ki yetkilendirme (API Key) sorunu olmasın
             if schema.get("output_type") == "stream":
-                events = replicate.stream(config["endpoint"], input=payload)
+                # Replicate client'ının stream metodunu kullanıyoruz
+                events = self.client.stream(config["endpoint"], input=payload)
                 result = "".join([str(event) for event in events])
             else:
-                result = replicate.run(config["endpoint"], input=payload)
+                result = self.client.run(config["endpoint"], input=payload)
 
             # 4. Çıktıyı Çözümle
-            # NOT: Bir önceki hatada gördüğümüz liste gelme durumunu burada _parse_output içinde hallediyoruz.
             parsed_output = self._parse_output(result, schema["output_type"])
             return parsed_output
 
@@ -232,6 +359,7 @@ class UniversalAIClient:
             return None
             
         finally:
+            # Sadece normal file_obj açıldıysa kapat (Base64'te 'with' kullandığımız için kendi kapanır)
             if file_obj and not file_obj.closed:
                 file_obj.close()
 

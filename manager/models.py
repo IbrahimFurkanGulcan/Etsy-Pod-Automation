@@ -93,10 +93,78 @@ class DesignVariation(models.Model):
 # 4. MODÜL: SEO ve Title Üretimi
 # ==========================================
 class SeoOptimization(models.Model):
-    product = models.OneToOneField(EtsyProduct, on_delete=models.CASCADE, related_name='seo')
+    # DİKKAT: Artık null=True, blank=True oldu çünkü manuel yüklemeden de gelebilir
+    product = models.OneToOneField(EtsyProduct, on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
+    
+    # Pipeline 2 (Manuel Yüklemeler) için bağlantı
+    manual_upload = models.OneToOneField('ManualUpload', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
     
     generated_title = models.CharField(max_length=500, blank=True, null=True)
     generated_tags = models.TextField(blank=True, null=True)
     target_keywords = models.TextField(blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+# ==========================================
+# 5. MODÜL: MOCKUP ŞABLONLARI (OpenCV Sandviç Modeli İçin)
+# ==========================================
+class MockupGroup(models.Model):
+    """Kullanıcının 'Siyah Tişört Seti' gibi koleksiyonlarını tutar"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mockup_groups')
+    name = models.CharField(max_length=150, help_text="Örn: Oversize Tişört Seti")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.user.username})"
+
+class MockupItem(models.Model):
+    """Bir gruba ait olan tekil mockup görselleri ve koordinatları"""
+    group = models.ForeignKey(MockupGroup, on_delete=models.CASCADE, related_name='items')
+    
+    # Görsel verileri
+    name = models.CharField(max_length=150, help_text="Örn: Ön Yüz, Yakın Çekim")
+    mockup_image = models.ImageField(upload_to='mockups/items/')
+    
+    # Koordinat verileri (JSON)
+    # { "left": 100, "top": 50, "width": 200, "height": 300, "angle": 0, "canvas_scale": 0.5 }
+    placement_data = models.JSONField(default=dict, blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.group.name} - {self.name}"
+
+# ==========================================
+# 6. MODÜL: MANUEL TASARIM YÜKLEMELERİ (Pipeline 2)
+# ==========================================
+class UploadGroup(models.Model):
+    """Kullanıcının toplu yüklediği tasarım setleri (Örn: '15 Kasım Yüklemeleri')"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='upload_groups')
+    name = models.CharField(max_length=150)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.user.username}"
+
+class ManualUpload(models.Model):
+    """Tekil olarak yüklenen ham tasarım dosyası ve analiz durumu"""
+    group = models.ForeignKey(UploadGroup, on_delete=models.CASCADE, related_name='uploads')
+    
+    # Kullanıcının yüklediği ham transparan tasarım
+    image = models.ImageField(upload_to='manual_uploads/designs/')
+
+    original_filename = models.CharField(max_length=255, blank=True, null=True, db_index=True)
+    
+    # AI Analiz Sonucu
+    vision_analysis = models.TextField(blank=True, null=True, help_text="GPT-4o Vision betimlemesi")
+    
+    # İŞTE EKSİK OLAN SATIRLAR BURASI:
+    mockup_image_url = models.CharField(max_length=500, blank=True, null=True)
+    status_seo = models.BooleanField(default=False)
+    status_mockup = models.BooleanField(default=False)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Upload {self.id} (Group: {self.group.name})"

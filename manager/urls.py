@@ -22,6 +22,13 @@ urlpatterns = [
     path('export-project/', views.export_project_action, name='export_project'),
     path('history/', views.history_page, name='history'),
     path('delete-history/', views.delete_history_item, name='delete_history'),
+    path('mockup-templates/', views.mockup_templates_page, name='mockup_templates'),
+    path('save-mockups/', views.save_mockups_action, name='save_mockups'),
+    path('apply-mockups/', views.apply_mockups_action, name='apply_mockups'),
+    path('upload-manual-designs/', views.upload_manual_designs_action, name='upload_manual_designs'),
+    path('process-batch/', views.process_batch_action, name='process_batch'),
+    path('export-batch/', views.export_batch_action, name='export_batch'),
+    path('get-batch-mockups/<int:upload_id>/', views.get_batch_mockups, name='get_batch_mockups'),
     
     
 ]

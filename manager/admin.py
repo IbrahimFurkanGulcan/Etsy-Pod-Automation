@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
-from .models import EtsyProduct, DesignVariation, SeoOptimization, UserSettings
+from .models import EtsyProduct, DesignVariation, SeoOptimization, UserSettings, MockupGroup, MockupItem, UploadGroup, ManualUpload
 
 # --- 1. Ürün Detayının İçindeki Varyasyon Listesi ---
 class DesignVariationInline(admin.TabularInline):
@@ -139,3 +139,74 @@ class UserSettingsAdmin(admin.ModelAdmin):
             return f"{key[:5]}...{key[-4:]}"
         return "Key Yok"
     masked_api_key.short_description = "Replicate API Key"
+
+@admin.register(MockupGroup)
+class MockupGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'created_at')
+    search_fields = ('name',)
+
+@admin.register(MockupItem)
+class MockupItemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'group', 'created_at')
+    list_filter = ('group',)
+
+
+# --- 6. Pipeline 2 (Manuel Yüklemeler) Admin Ayarları ---
+
+class ManualUploadInline(admin.TabularInline):
+    model = ManualUpload
+    extra = 0
+    readonly_fields = ('image_preview', 'vision_analysis', 'status_seo', 'status_mockup', 'mockup_preview')
+    fields = ('image_preview', 'vision_analysis', 'status_seo', 'status_mockup', 'mockup_preview')
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 100px; border:1px solid #ddd; border-radius:4px;" />', obj.image.url)
+        return "-"
+    image_preview.short_description = "Orijinal"
+
+    def mockup_preview(self, obj):
+        if obj.mockup_image_url:
+            return format_html('<img src="{}" style="max-height: 100px; border:1px solid #ddd; border-radius:4px;" />', obj.mockup_image_url)
+        return "-"
+    mockup_preview.short_description = "Mockup Sonucu"
+
+@admin.register(UploadGroup)
+class UploadGroupAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'item_count', 'created_at')
+    inlines = [ManualUploadInline]
+
+    def item_count(self, obj):
+        return obj.uploads.count()
+    item_count.short_description = "Yüklenen Tasarım Sayısı"
+
+@admin.register(ManualUpload)
+class ManualUploadAdmin(admin.ModelAdmin):
+    list_display = ('id', 'group_link', 'image_preview', 'has_vision', 'status_seo', 'status_mockup', 'created_at')
+    list_filter = ('status_seo', 'status_mockup')
+    readonly_fields = ('image_preview', 'vision_analysis', 'mockup_preview')
+    
+    # SEO verilerini tekil upload sayfasında görmek için inline ekliyoruz
+    inlines = [SeoOptimizationInline]
+
+    def group_link(self, obj):
+        return obj.group.name
+    group_link.short_description = "Grup"
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" style="max-height: 50px; border-radius:4px;" />', obj.image.url)
+        return "-"
+    image_preview.short_description = "Görsel"
+
+    def mockup_preview(self, obj):
+        if obj.mockup_image_url:
+            return format_html('<img src="{}" style="max-height: 200px; border-radius:4px;" />', obj.mockup_image_url)
+        return "Henüz Mockup Üretilmedi"
+    mockup_preview.short_description = "Örnek Mockup"
+
+    def has_vision(self, obj):
+        return bool(obj.vision_analysis)
+    has_vision.boolean = True
+    has_vision.short_description = "Vision Analizi"
+

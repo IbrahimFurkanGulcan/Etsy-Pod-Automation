@@ -110,8 +110,13 @@ function restoreUserConfig() {
                 if(step.prompt && document.getElementById('seoPrompt')) {
                     document.getElementById('seoPrompt').value = step.prompt;
                 }
-                if(step.system_prompt && document.getElementById('seoSystemPrompt')) {
-                    document.getElementById('seoSystemPrompt').value = step.system_prompt;
+                
+                // YENİ: İkiye bölünen system promptları geri yükle
+                if(step.title_system_prompt && document.getElementById('seoTitleSystemPrompt')) {
+                    document.getElementById('seoTitleSystemPrompt').value = step.title_system_prompt;
+                }
+                if(step.tags_system_prompt && document.getElementById('seoTagsSystemPrompt')) {
+                    document.getElementById('seoTagsSystemPrompt').value = step.tags_system_prompt;
                 }
             }
         } catch (err) {
@@ -213,14 +218,16 @@ function loadDefaultPrompt(section) {
     if(!select) return;
     const selectedModel = select.value;
     
-    // SEO (GPT-4o) için özel çift kutu doldurma mantığı
+    // SEO (GPT-4o) için özel ÜÇLÜ kutu doldurma mantığı
     if (section === 'seo') {
         const userTextarea = document.getElementById('seoPrompt');
-        const systemTextarea = document.getElementById('seoSystemPrompt');
+        const titleSysTextarea = document.getElementById('seoTitleSystemPrompt');
+        const tagsSysTextarea = document.getElementById('seoTagsSystemPrompt');
         
         if (DEFAULT_PROMPTS[section] && DEFAULT_PROMPTS[section][selectedModel]) {
-            userTextarea.value = DEFAULT_PROMPTS[section][selectedModel].user_prompt;
-            systemTextarea.value = DEFAULT_PROMPTS[section][selectedModel].system_prompt;
+            if (userTextarea) userTextarea.value = DEFAULT_PROMPTS[section][selectedModel].user_prompt || "";
+            if (titleSysTextarea) titleSysTextarea.value = DEFAULT_PROMPTS[section][selectedModel].title_system_prompt || "";
+            if (tagsSysTextarea) tagsSysTextarea.value = DEFAULT_PROMPTS[section][selectedModel].tags_system_prompt || "";
         }
     } 
     // Diğer tek kutulu modeller (Dino vb.) için
@@ -232,8 +239,28 @@ function loadDefaultPrompt(section) {
     }
 }
 
-function resetPrompt(section) {
-    loadDefaultPrompt(section);
+function resetPrompt(section, field = 'all') {
+    // Sadece belirli bir kutu istenmişse (Title, Tags veya User)
+    if (section === 'seo' && field !== 'all') {
+        const select = document.getElementById(`${section}Model`);
+        if(!select) return;
+        const selectedModel = select.value;
+        
+        const defaults = DEFAULT_PROMPTS[section] && DEFAULT_PROMPTS[section][selectedModel];
+        if(!defaults) return;
+
+        if (field === 'title') {
+            document.getElementById('seoTitleSystemPrompt').value = defaults.title_system_prompt || "";
+        } else if (field === 'tags') {
+            document.getElementById('seoTagsSystemPrompt').value = defaults.tags_system_prompt || "";
+        } else if (field === 'user') {
+            document.getElementById('seoPrompt').value = defaults.user_prompt || "";
+        }
+    } 
+    // Genel bir sıfırlama istenmişse (Sayfa ilk açılışı veya diğer tek kutulu modeller)
+    else {
+        loadDefaultPrompt(section);
+    }
 }
 
 // ==========================================
@@ -284,12 +311,13 @@ async function saveConfiguration() {
     }
 
     if (document.getElementById('enableSeo').checked) {
-        // BURASI DEĞİŞTİ: Artık hem User Prompt hem System Prompt kaydediliyor
+        // Artık 1 user prompt, 2 system prompt kaydediliyor
         config.pipeline.push({ 
             step: "seo", 
             model: document.getElementById('seoModel').value, 
             prompt: document.getElementById('seoPrompt').value,
-            system_prompt: document.getElementById('seoSystemPrompt').value
+            title_system_prompt: document.getElementById('seoTitleSystemPrompt').value,
+            tags_system_prompt: document.getElementById('seoTagsSystemPrompt').value
         });
     }
 
