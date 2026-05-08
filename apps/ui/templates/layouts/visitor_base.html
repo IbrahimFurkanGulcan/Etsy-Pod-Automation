@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Etsy AI Design Automation{% endblock %}</title>
+    <!-- Tailwind ve FontAwesome (Eski projenden alındı) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white text-gray-800 font-sans min-h-screen flex flex-col">
+    
+    <!-- Ziyaretçi Navbar -->
+    <nav class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center max-w-7xl">
+            <!-- Logo -->
+            <a href="{% url 'ui:landing' %}" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600 tracking-wider flex items-center">
+                <i class="fa-solid fa-wand-magic-sparkles text-orange-500 mr-2"></i>Etsy AI
+            </a>
+            
+            <!-- Menü Linkleri -->
+            <div class="hidden md:flex items-center space-x-8">
+                {% block nav_links %}
+                    <a href="#features" class="text-gray-600 hover:text-orange-500 font-medium transition">Özellikler</a>
+                    <a href="#how-it-works" class="text-gray-600 hover:text-orange-500 font-medium transition">Nasıl Çalışır?</a>
+                {% endblock %}
+            </div>
+
+            <!-- Aksiyon Butonları -->
+            <div class="flex items-center space-x-4">
+                <!-- BURAYI BLOCK İÇİNE ALDIK -->
+                {% block nav_actions %}
+                    {% if request.user.is_authenticated %}
+                        <span class="text-sm font-medium text-gray-500 hidden md:block">Merhaba, {{ request.user.username }}</span>
+                        <a href="{% url 'ui:app_home' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-bold transition shadow-sm hover:shadow-md flex items-center gap-2">
+                            <i class="fa-solid fa-rocket"></i> Panele Git
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-orange-600 font-semibold transition">Giriş Yap</a>
+                        <a href="{% url 'accounts:register' %}" class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg font-bold transition shadow-sm hover:shadow-md">
+                            Kayıt Ol
+                        </a>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Ana İçerik Alanı (Alt sayfalar buraya oturacak) -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Ziyaretçi Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 py-10 mt-auto">
+        <div class="container mx-auto px-6 max-w-7xl text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="text-gray-500 text-sm">
+                &copy; 2026 Etsy AI Design Automation. Tüm hakları saklıdır.
+            </div>
+            <div class="space-x-4 text-gray-400">
+                <a href="#" class="hover:text-orange-500 transition"><i class="fa-brands fa-twitter text-xl"></i></a>
+                <a href="#" class="hover:text-orange-500 transition"><i class="fa-brands fa-github text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

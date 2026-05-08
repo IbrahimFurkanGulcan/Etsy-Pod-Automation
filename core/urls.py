@@ -20,11 +20,18 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('manager.urls')), # Mahallemizin (manager) sokaklarını ana kapıya bağladık
+     path('admin/', admin.site.urls),
+    # path('', include('manager.urls')), # Mahallemizin (manager) sokaklarını ana kapıya bağladık
+
+     path('etsy/', include('apps.etsy.urls')),
+     path('ai/', include('apps.ai.urls')),
+     path('common/', include('apps.common.urls')),
+     path('image_processor/', include('apps.image_processor.urls')),
+     path('products/', include('apps.products.urls')),
+     path('', include('apps.ui.urls')),
+     path('accounts/', include('apps.accounts.urls')),
 ]
 
 # Görsellerin (media) geliştirme ortamında (DEBUG=True) görünmesi için gerekli
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    

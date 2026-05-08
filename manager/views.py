@@ -28,6 +28,7 @@ from .mockup_processor import process_single_mockup
 
 
 
+
 @csrf_exempt
 @login_required(login_url='/login/') # Güvenlik: Sadece giriş yapanlar ayar kaydedebilir
 def save_config_action(request):
@@ -951,8 +952,7 @@ def apply_mockups_action(request):
 # PIPELINE 2: MANUEL YÜKLEME VE TOPLU İŞLEM
 # ─────────────────────────────────────────────
 
-import os
-from django.core.files.base import ContentFile
+
 
 @csrf_exempt
 @login_required(login_url='/login/')

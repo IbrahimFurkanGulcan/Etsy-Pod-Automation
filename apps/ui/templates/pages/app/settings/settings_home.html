@@ -1,0 +1,85 @@
+{% extends 'layouts/app_base.html' %}
+
+{% block title %}Ayarlar Merkezi - Etsy AI{% endblock %}
+{% block page_title %}Ayarlar ve Yönetim Merkezi{% endblock %}
+{% block nav_settings %}bg-slate-800 text-white{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8">
+
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">Hesap ve Otomasyon Ayarları</h2>
+        <p class="text-slate-500">Platform üzerindeki tüm profil, abonelik, şablon ve yapay zeka tercihlerinizi buradan yönetebilirsiniz.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. Profil ve Hesap (Gelecek) -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 opacity-75 cursor-not-allowed relative overflow-hidden">
+            <div class="w-12 h-12 bg-slate-100 text-slate-500 rounded-lg flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Profil Bilgileri</h3>
+            <p class="text-sm text-slate-500 mb-4">Şifre değiştirme, kişisel bilgiler ve güvenlik tercihleri.</p>
+            <span class="text-xs font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full border border-slate-200">Yakında</span>
+        </div>
+
+        <!-- 2. Abonelik ve Upgrade (Gelecek) -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 opacity-75 cursor-not-allowed relative overflow-hidden">
+            <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-lg flex items-center justify-center text-xl mb-4">
+                <i class="fa-solid fa-gem"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2">Abonelik (Upgrade)</h3>
+            <p class="text-sm text-slate-500 mb-4">Paket yükseltme, faturalandırma ve kredi geçmişi.</p>
+            <span class="text-xs font-bold bg-amber-50 text-amber-600 px-3 py-1 rounded-full border border-amber-200">Yakında</span>
+        </div>
+
+        <!-- 3. AI Pipeline Ayarları (Config) -->
+        <a href="{% url 'ui:settings_pipeline' %}" class="bg-white p-6 rounded-xl shadow-sm border border-indigo-100 hover:border-indigo-400 hover:shadow-md transition group block">
+            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition">AI Pipeline Ayarları</h3>
+            <p class="text-sm text-slate-500 mb-4">API anahtarları, model seçimleri ve varsayılan prompt ayarları.</p>
+            <span class="text-sm font-bold text-indigo-600 flex items-center">
+                Yapılandır <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+            </span>
+        </a>
+
+        <!-- 4. Mockup Şablonları (Dual Access) -->
+        <a href="{% url 'ui:mockup_templates' %}" class="bg-white p-6 rounded-xl shadow-sm border border-orange-100 hover:border-orange-400 hover:shadow-md transition group block">
+            <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-orange-600 transition">Mockup Şablonları</h3>
+            <p class="text-sm text-slate-500 mb-4">Tasarımların giydirileceği transparan arka planlı görsel koleksiyonları.</p>
+            <span class="text-sm font-bold text-orange-600 flex items-center">
+                Yönet <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i>
+            </span>
+        </a>
+
+        <!-- 5. Geçmiş Üretimler (Dual Access) -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-emerald-100 hover:border-emerald-400 hover:shadow-md transition group flex flex-col">
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-2 group-hover:text-emerald-600 transition">Üretim Geçmişi</h3>
+            <p class="text-sm text-slate-500 mb-6 flex-grow">Daha önce analiz edilmiş linkler, üretilen görseller ve kaydedilen SEO verileri.</p>
+            
+            <!-- Alt Kategoriler (T-Shirt ve Takı) -->
+            <div class="flex flex-col gap-2 mt-auto">
+                <a href="{% url 'ui:history_tshirt' %}" class="flex items-center justify-between p-2.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 transition font-medium text-sm border border-emerald-100 hover:border-emerald-200">
+                    <span><i class="fa-solid fa-shirt mr-2 w-4 text-center"></i> T-Shirt Geçmişi</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                
+                <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 text-slate-400 border border-slate-100 cursor-not-allowed font-medium text-sm">
+                    <span><i class="fa-solid fa-gem mr-2 w-4 text-center"></i> Takı Geçmişi</span>
+                    <span class="bg-slate-200 text-slate-500 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">Yakında</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
