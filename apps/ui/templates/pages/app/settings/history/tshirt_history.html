@@ -1,117 +1,57 @@
 {% extends 'layouts/app_base.html' %}
 {% load static %}
 
-{% block title %}T-Shirt Geçmişi - Etsy AI{% endblock %}
-{% block page_title %}T-Shirt Üretim Geçmişi{% endblock %}
-{% block nav_history_tshirt %}bg-slate-800 text-white{% endblock %} <!-- Sol menüde aktif görünmesini sağlar -->
-
 {% block content %}
-<div class="max-w-7xl mx-auto space-y-6 pb-20">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-extrabold text-slate-800"><i class="fa-solid fa-clock-rotate-left text-indigo-500 mr-2"></i> İşlem Geçmişi & Kütüphane</h1>
+        <p class="text-slate-500 text-sm mt-1">Önceki analizlerinizi inceleyin ve seçtiklerinizi tek tuşla indirin.</p>
+    </div>
 
-    <div class="flex justify-between items-center mb-6 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-        <div>
-            <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-clock-rotate-left mr-2 text-indigo-500"></i>Geçmiş Analizler</h2>
-            <p class="text-sm text-slate-500 mt-1">Daha önce analiz ettiğiniz ve ürettiğiniz tüm T-Shirt tasarımları.</p>
+    <div class="flex border-b border-slate-200 mb-6">
+        <button onclick="switchTab('p1')" id="btn-tab-p1" class="px-6 py-3 font-bold text-sm border-b-2 border-indigo-600 text-indigo-600 transition">Pipeline 1 (Etsy AI)</button>
+        <button onclick="switchTab('p2')" id="btn-tab-p2" class="px-6 py-3 font-bold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Pipeline 2 (Manuel Üretim)</button>
+    </div>
+
+    <div id="tab-p1" class="block">
+        <div class="flex justify-between items-center mb-4">
+            <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer"><input type="checkbox" id="selectAllP1" onclick="toggleAll('p1')" class="mr-2 rounded text-indigo-600"> Tümünü Seç</label>
+            <button onclick="exportSelected('p1')" id="export-btn-p1" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow"><i class="fa-solid fa-download mr-2"></i> Seçilenleri İndir (ZIP)</button>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase">
+                    <tr><th class="p-4 w-12"></th><th class="p-4">Orijinal (Etsy)</th><th class="p-4">AI Tasarım</th><th class="p-4">Mockuplar</th><th class="p-4">SEO Verisi</th></tr>
+                </thead>
+                <tbody id="p1-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
         </div>
     </div>
 
-    <div class="space-y-6">
-        {% for product in products %}
-        <div id="card-{{ product.id }}" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col lg:flex-row gap-8 relative hover:shadow-md transition">
-            
-            <!-- 1. Bölüm: Orijinal Ürün -->
-            <div class="lg:w-1/3 space-y-3">
-                <span class="bg-slate-100 text-slate-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Orijinal Ürün</span>
-                <a href="{{ product.url }}" target="_blank" class="block">
-                    <img src="{{ product.image_url }}" class="w-full h-48 object-cover rounded-lg border border-slate-200 hover:opacity-90 transition shadow-sm">
-                </a>
-                <h3 class="font-bold text-slate-800 line-clamp-2" title="{{ product.title }}">{{ product.title }}</h3>
-                <div class="flex gap-4 text-xs font-medium text-slate-500">
-                    <span title="Görüntülenme"><i class="fa-solid fa-eye text-indigo-400 mr-1"></i> {{ product.views|default:"0" }}</span>
-                    <span title="Favoriler"><i class="fa-solid fa-heart text-red-400 mr-1"></i> {{ product.favorites_count|default:"0" }}</span>
-                    <span title="Yorumlar"><i class="fa-solid fa-star text-amber-400 mr-1"></i> {{ product.item_review_count|default:"0" }}</span>
-                </div>
-                <div class="text-xs text-slate-400 line-clamp-2 mt-2 break-all" title="{{ product.tags }}">
-                    <strong>Eski Tagler:</strong> {{ product.tags|default:"Yok" }}
-                </div>
-            </div>
-
-            <!-- 2. Bölüm: Üretilen Tasarım -->
-            <div class="lg:w-1/3 space-y-3 border-t lg:border-t-0 lg:border-l border-slate-100 pt-6 lg:pt-0 lg:pl-8">
-                <div class="flex justify-between items-center">
-                    <span class="bg-indigo-50 text-indigo-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Üretilen Tasarım (No-Bg)</span>
-                    {% if product.variations.exists %}
-                    <button onclick="deleteData({{ product.id }}, 'design')" class="text-red-400 hover:text-red-600 text-sm font-medium transition" title="Sadece Tasarımı Sil">
-                        <i class="fa-solid fa-trash-can"></i> Sil
-                    </button>
-                    {% endif %}
-                </div>
-                
-                {% with product.variations.first as design %}
-                    {% if design and design.no_bg_image %}
-                    <!-- Transparan arka planı belli etmek için checkerboard deseni -->
-                    <img src="{{ design.no_bg_image.url }}" class="w-full h-48 object-contain bg-[url('https://upload.wikimedia.org/wikipedia/commons/5/5c/Image_checkerboard.png')] rounded-lg border border-slate-200 shadow-inner">
-                    <p class="text-xs text-slate-500 text-center font-medium">Model: {{ design.ai_model_name }}</p>
-                    {% else %}
-                    <div class="w-full h-48 flex items-center justify-center bg-slate-50 border-2 border-dashed border-slate-200 rounded-lg text-slate-400 text-sm flex-col">
-                        <i class="fa-regular fa-image text-3xl mb-2 opacity-50"></i>
-                        Tasarım Bulunamadı
-                    </div>
-                    {% endif %}
-                {% endwith %}
-            </div>
-
-            <!-- 3. Bölüm: Üretilen SEO ve Toplu Silme -->
-            <div class="lg:w-1/3 space-y-3 border-t lg:border-t-0 lg:border-l border-slate-100 pt-6 lg:pt-0 lg:pl-8 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="bg-emerald-50 text-emerald-600 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Üretilen SEO</span>
-                        {% if product.seo %}
-                        <button onclick="deleteData({{ product.id }}, 'seo')" class="text-red-400 hover:text-red-600 text-sm font-medium transition" title="Sadece SEO'yu Sil">
-                            <i class="fa-solid fa-trash-can"></i> Sil
-                        </button>
-                        {% endif %}
-                    </div>
-
-                    {% if product.seo %}
-                        <div class="space-y-4">
-                            <div>
-                                <p class="text-xs font-bold text-slate-700">Yeni Title:</p>
-                                <p class="text-sm text-slate-700 font-medium bg-emerald-50 p-3 rounded-lg border border-emerald-100 mt-1 line-clamp-3">{{ product.seo.generated_title }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs font-bold text-slate-700">Yeni Tags:</p>
-                                <p class="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-200 mt-1 leading-relaxed">{{ product.seo.generated_tags }}</p>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="h-32 flex items-center justify-center text-slate-400 text-sm italic bg-slate-50 rounded-lg border border-slate-100">
-                            SEO Üretilmemiş
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <button onclick="deleteData({{ product.id }}, 'full')" class="w-full mt-4 py-2.5 border-2 border-red-100 text-red-500 hover:bg-red-50 hover:border-red-200 rounded-lg transition text-sm font-bold flex items-center justify-center">
-                    <i class="fa-solid fa-dumpster mr-2"></i> Tüm Analizi Sil
-                </button>
-            </div>
+    <div id="tab-p2" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+            <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer"><input type="checkbox" id="selectAllP2" onclick="toggleAll('p2')" class="mr-2 rounded text-indigo-600"> Tümünü Seç</label>
+            <button onclick="exportSelected('p2')" id="export-btn-p2" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow"><i class="fa-solid fa-download mr-2"></i> Seçilenleri İndir (ZIP)</button>
         </div>
-        {% empty %}
-        <!-- Veri Yoksa Görünecek Alan -->
-        <div class="text-center py-20 bg-white rounded-xl shadow-sm border border-slate-200">
-            <i class="fa-solid fa-box-open text-6xl text-slate-200 mb-4"></i>
-            <h3 class="text-xl font-bold text-slate-700 mb-2">Henüz Analiz Yok</h3>
-            <p class="text-slate-500 mb-6">Pipeline üzerinden ilk Etsy ürününüzü analiz etmeye başlayın.</p>
-            <a href="{% url 'ui:tshirt_pipeline1' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-bold transition shadow-sm inline-block">
-                Yeni Analize Başla
-            </a>
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase">
+                    <tr><th class="p-4 w-12"></th><th class="p-4">Yüklenen Tasarım</th><th class="p-4">Mockuplar</th><th class="p-4">SEO Verisi</th></tr>
+                </thead>
+                <tbody id="p2-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
         </div>
-        {% endfor %}
     </div>
 
+    <div id="history-modal" class="fixed inset-0 z-50 hidden bg-slate-900/90 backdrop-blur-sm flex items-center justify-center transition-opacity opacity-0">
+        <button onclick="closeHistoryCarousel()" class="absolute top-6 right-6 text-white hover:text-red-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="changeHistoryCarousel(-1)" id="modal-prev-btn" class="absolute left-6 text-white hover:text-indigo-400 text-5xl"><i class="fa-solid fa-chevron-left"></i></button>
+        <img id="history-modal-image" src="" class="max-h-[85vh] max-w-[85vw] object-contain rounded-lg shadow-2xl">
+        <button onclick="changeHistoryCarousel(1)" id="modal-next-btn" class="absolute right-6 text-white hover:text-indigo-400 text-5xl"><i class="fa-solid fa-chevron-right"></i></button>
+        <div id="history-modal-counter" class="absolute bottom-6 text-white font-bold tracking-widest bg-slate-800/50 px-4 py-2 rounded-full"></div>
+    </div>
+    
+    <script src="{% static 'ui/js/tshirt_history.js' %}"></script>
 </div>
 {% endblock %}
 
-{% block extra_scripts %}
-
-{% endblock %}

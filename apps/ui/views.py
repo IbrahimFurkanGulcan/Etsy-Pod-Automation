@@ -35,8 +35,8 @@ def tshirt_pipeline1_view(request):
 def tshirt_pipeline2_view(request):
     return render(request, 'pipelines/tshirt_pipeline2.html')
 
-login_required(login_url='/login/')
-def history_tshirt_view(request):
+@login_required(login_url='/login/')
+def tshirt_history_view(request):
     return render(request, 'pages/app/settings/history/tshirt_history.html')
 
 @login_required(login_url='/login/')
@@ -84,3 +84,4 @@ def settings_pipeline_view(request):
         "default_prompts_json": json.dumps(get_default_pipeline_defaults()),
     }
     return render(request, 'pages/app/settings/config.html', context)
+

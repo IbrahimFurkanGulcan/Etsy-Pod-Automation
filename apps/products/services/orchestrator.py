@@ -136,7 +136,11 @@ class Pipeline2Orchestrator:
         title_prompt = DEFAULT_SYSTEM_PROMPTS.get("gpt-4o_title", "")
         tags_prompt = DEFAULT_SYSTEM_PROMPTS.get("gpt-4o_tag", "")
 
-        # 2. VISION AI VE SEO İŞLEMLERİ
+        # 2. VISION AI VE SEO İŞLEMLERİ (PARALEL YAPI)
+        base_results = {}
+        seo_tasks = []
+
+        # Önce tüm tasarımların temel dönüş şablonunu oluştur ve SEO görevlerini topla
         for upload in uploads:
             target = seo_targets.get(str(upload.id), 'both')
             
@@ -147,37 +151,52 @@ class Pipeline2Orchestrator:
                 "mockups": mockup_grouped_urls.get(upload.id, {})
             }
 
-            # ÖNCE: Veritabanında zaten var mı kontrol et (Target ne olursa olsun!)
+            # DB'de varsa direkt getir (Cache)
             existing_seo = None
             if hasattr(upload, 'seo') and upload.seo and upload.seo.generated_title:
                 existing_seo = {"title": upload.seo.generated_title, "tags": upload.seo.generated_tags}
                 item_result["seo"] = existing_seo
 
-            # SONRA: Eğer veritabanında yoksa VE kullanıcı "Pasif" seçmediyse üret
+            # DB'de yoksa ve "Pasif" seçilmediyse görev (Task) listesine ekle
             if not existing_seo or should_recreate_seo:
                 if target != 'none':
-                    try:
-                        if not should_recreate_seo and hasattr(upload, 'seo') and upload.seo and upload.seo.generated_title:
-                            item_result["seo"] = {"title": upload.seo.generated_title, "tags": upload.seo.generated_tags}
-                        else:
-                            vision_res = VisionAnalysisService.analyze_design(manual_upload=upload, api_key=api_key, force_recreate=should_recreate_seo)
-                            
-                            if vision_res.get("success"):
-                                # PROMPTLAR ARTIK BOŞ GİTMİYOR!
-                                seo_res = SeoEngineService.generate_seo_for_design(
-                                    model_id="gpt-4o",
-                                    api_key=api_key,
-                                    title_prompt=title_prompt, 
-                                    tags_prompt=tags_prompt,  
-                                    manual_upload=upload,
-                                    target=target
-                                )
-                                if seo_res.get("success"):
-                                    item_result["seo"] = {"title": seo_res.get("title"), "tags": seo_res.get("tags")}
-                                else: item_result["seo_error"] = seo_res.get("error")
-                            else: item_result["seo_error"] = vision_res.get("error")
-                    except Exception as e: item_result["seo_error"] = str(e)
+                    seo_tasks.append({"upload": upload, "target": target})
 
-            results.append(item_result)
+            base_results[upload.id] = item_result
 
+        # Eğer üretilecek SEO varsa ThreadService ile PARALEL çalıştır
+        if seo_tasks:
+            def _run_seo(task):
+                up = task['upload']
+                tgt = task['target']
+                try:
+                    vision_res = VisionAnalysisService.analyze_design(
+                        manual_upload=up, api_key=api_key, force_recreate=should_recreate_seo
+                    )
+                    if vision_res.get("success"):
+                        seo_res = SeoEngineService.generate_seo_for_design(
+                            model_id="gpt-4o", api_key=api_key, title_prompt=title_prompt, 
+                            tags_prompt=tags_prompt, manual_upload=up, target=tgt
+                        )
+                        if seo_res.get("success"):
+                            return {"success": True, "upload_id": up.id, "seo": {"title": seo_res.get("title"), "tags": seo_res.get("tags")}}
+                        return {"success": False, "upload_id": up.id, "error": seo_res.get("error")}
+                    return {"success": False, "upload_id": up.id, "error": vision_res.get("error")}
+                except Exception as e:
+                    return {"success": False, "upload_id": up.id, "error": str(e)}
+
+            print(f"🔍 Pipeline 2: Toplam {len(seo_tasks)} SEO/Vision işlemi paralel başlatılıyor...")
+            seo_results_parallel = ThreadService.run_parallel(_run_seo, seo_tasks, max_workers=5)
+
+            # Paralel sonuçları ana listeye eşle
+            for res in seo_results_parallel:
+                if not res: continue
+                uid = res.get('upload_id')
+                if res.get('success'):
+                    base_results[uid]["seo"] = res.get("seo")
+                else:
+                    base_results[uid]["seo_error"] = res.get("error")
+
+        # Sözlüğü listeye çevirip dön
+        results = list(base_results.values())
         return results

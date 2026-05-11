@@ -11,100 +11,321 @@ D:.
 |   yapi.txt
 |   
 +---apps
+|   |   __init__.py
+|   |   
 |   +---accounts
 |   |   |   admin.py
 |   |   |   apps.py
 |   |   |   models.py
 |   |   |   tests.py
+|   |   |   urls.py
+|   |   |   utils.py
 |   |   |   views.py
 |   |   |   __init__.py
 |   |   |   
-|   |   \---migrations
-|   |           __init__.py
+|   |   +---migrations
+|   |   |   |   0001_initial.py
+|   |   |   |   0002_pipelineconfig_dynamic_config_and_more.py
+|   |   |   |   0003_rename_tags_system_prompt_pipelineconfig_detection_prompt_and_more.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           0001_initial.cpython-312.pyc
+|   |   |           0002_pipelineconfig_dynamic_config_and_more.cpython-312.pyc
+|   |   |           0003_rename_tags_system_prompt_pipelineconfig_detection_prompt_and_more.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           utils.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
 |   |           
 |   +---ai
 |   |   |   admin.py
 |   |   |   apps.py
 |   |   |   models.py
 |   |   |   tests.py
+|   |   |   urls.py
 |   |   |   views.py
 |   |   |   __init__.py
 |   |   |   
 |   |   +---migrations
-|   |   |       __init__.py
-|   |   |       
-|   |   \---services
-|   |       |   detect.py
-|   |       |   
-|   |       +---generations
-|   |       |       designs.py
-|   |       |       image_analysis.py
-|   |       |       seo.py
-|   |       |       __init__.py
-|   |       |       
-|   |       \---prompts
-|   |               sistem_prompts.py
-|   |               user_prompts.py
-|   |               
+|   |   |   |   0001_initial.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           0001_initial.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---services
+|   |   |   |   background_remove.py
+|   |   |   |   client.py
+|   |   |   |   detect.py
+|   |   |   |   upscale.py
+|   |   |   |   
+|   |   |   +---config
+|   |   |   |   |   model_registry.py
+|   |   |   |   |   system_prompts.py
+|   |   |   |   |   user_prompts.py
+|   |   |   |   |   
+|   |   |   |   \---__pycache__
+|   |   |   |           model_registry.cpython-312.pyc
+|   |   |   |           system_prompts.cpython-312.pyc
+|   |   |   |           user_prompts.cpython-312.pyc
+|   |   |   |           
+|   |   |   +---generations
+|   |   |   |   |   designs.py
+|   |   |   |   |   image_analysis.py
+|   |   |   |   |   processor.py
+|   |   |   |   |   seo.py
+|   |   |   |   |   __init__.py
+|   |   |   |   |   
+|   |   |   |   \---__pycache__
+|   |   |   |           designs.cpython-312.pyc
+|   |   |   |           image_analysis.cpython-312.pyc
+|   |   |   |           processor.cpython-312.pyc
+|   |   |   |           seo.cpython-312.pyc
+|   |   |   |           __init__.cpython-312.pyc
+|   |   |   |           
+|   |   |   \---__pycache__
+|   |   |           background_remove.cpython-312.pyc
+|   |   |           client.cpython-312.pyc
+|   |   |           detect.cpython-312.pyc
+|   |   |           upscale.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
+|   |           
 |   +---common
 |   |   |   admin.py
 |   |   |   apps.py
 |   |   |   models.py
 |   |   |   tests.py
+|   |   |   urls.py
 |   |   |   views.py
 |   |   |   __init__.py
 |   |   |   
 |   |   +---migrations
-|   |   |       __init__.py
-|   |   |       
-|   |   \---services
-|   |           batch.py
-|   |           export.py
-|   |           response_helpers.py
-|   |           __init__.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---services
+|   |   |   |   config_helper.py
+|   |   |   |   db_helpers.py
+|   |   |   |   encryption.py
+|   |   |   |   export.py
+|   |   |   |   file_helper.py
+|   |   |   |   response_helpers.py
+|   |   |   |   thread_helper.py
+|   |   |   |   zip_helper.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           db_helpers.cpython-312.pyc
+|   |   |           encryption.cpython-312.pyc
+|   |   |           export.cpython-312.pyc
+|   |   |           file_helper.cpython-312.pyc
+|   |   |           response_helpers.cpython-312.pyc
+|   |   |           thread_helper.cpython-312.pyc
+|   |   |           zip_helper.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
 |   |           
 |   +---etsy
 |   |   |   admin.py
 |   |   |   apps.py
 |   |   |   models.py
 |   |   |   tests.py
+|   |   |   urls.py
 |   |   |   views.py
 |   |   |   __init__.py
 |   |   |   
 |   |   +---migrations
-|   |   |       __init__.py
-|   |   |       
-|   |   \---services
-|   |           scraper.py
-|   |           __init__.py
+|   |   |   |   0001_initial.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           0001_initial.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---services
+|   |   |   |   scraper.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           scraper.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           tests.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
 |   |           
 |   +---image_processor
 |   |   |   admin.py
 |   |   |   apps.py
 |   |   |   models.py
 |   |   |   tests.py
+|   |   |   urls.py
 |   |   |   views.py
 |   |   |   __init__.py
 |   |   |   
 |   |   +---migrations
-|   |   |       __init__.py
-|   |   |       
-|   |   \---services
-|   |           crop.py
-|   |           mockup_processor.py
-|   |           __init__.py
+|   |   |   |   0001_initial.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           0001_initial.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---services
+|   |   |   |   crop.py
+|   |   |   |   mockup_processor.py
+|   |   |   |   mockup_template.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           crop.cpython-312.pyc
+|   |   |           mockup_processor.cpython-312.pyc
+|   |   |           mockup_template.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
 |   |           
-|   \---products
-|       |   admin.py
-|       |   apps.py
-|       |   models.py
-|       |   tests.py
-|       |   views.py
-|       |   __init__.py
-|       |   
-|       \---migrations
-|               __init__.py
-|               
+|   +---products
+|   |   |   admin.py
+|   |   |   apps.py
+|   |   |   models.py
+|   |   |   tests.py
+|   |   |   urls.py
+|   |   |   views.py
+|   |   |   __init__.py
+|   |   |   
+|   |   +---migrations
+|   |   |   |   0001_initial.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           0001_initial.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---services
+|   |   |   |   orchestrator.py
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           manual_upload.cpython-312.pyc
+|   |   |           orchestrator.cpython-312.pyc
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
+|   |           
+|   +---ui
+|   |   |   admin.py
+|   |   |   apps.py
+|   |   |   models.py
+|   |   |   tests.py
+|   |   |   urls.py
+|   |   |   views.py
+|   |   |   __init__.py
+|   |   |   
+|   |   +---migrations
+|   |   |   |   __init__.py
+|   |   |   |   
+|   |   |   \---__pycache__
+|   |   |           __init__.cpython-312.pyc
+|   |   |           
+|   |   +---static
+|   |   |   \---ui
+|   |   |       +---css
+|   |   |       |       style.css
+|   |   |       |       
+|   |   |       +---img
+|   |   |       \---js
+|   |   |               config.js
+|   |   |               mockup_templates.js
+|   |   |               tshirt_pipeline1.js
+|   |   |               tshirt_pipeline2.js
+|   |   |               
+|   |   +---templates
+|   |   |   +---components
+|   |   |   |       app_sidebar.html
+|   |   |   |       visitor_navbar.html
+|   |   |   |       
+|   |   |   +---layouts
+|   |   |   |       app_base.html
+|   |   |   |       visitor_base.html
+|   |   |   |       
+|   |   |   +---pages
+|   |   |   |   +---app
+|   |   |   |   |   |   category_jewelry.html
+|   |   |   |   |   |   category_tshirt.html
+|   |   |   |   |   |   home.html
+|   |   |   |   |   |   
+|   |   |   |   |   \---settings
+|   |   |   |   |       |   config.html
+|   |   |   |   |       |   mockup_templates.html
+|   |   |   |   |       |   settings_home.html
+|   |   |   |   |       |   
+|   |   |   |   |       \---history
+|   |   |   |   |               tshirt_history.html
+|   |   |   |   |               
+|   |   |   |   \---visitor
+|   |   |   |       |   landing.html
+|   |   |   |       |   
+|   |   |   |       \---login_register
+|   |   |   |               login.html
+|   |   |   |               register.html
+|   |   |   |               
+|   |   |   \---pipelines
+|   |   |           tshirt_pipeline1.html
+|   |   |           tshirt_pipeline2.html
+|   |   |           
+|   |   \---__pycache__
+|   |           admin.cpython-312.pyc
+|   |           apps.cpython-312.pyc
+|   |           models.cpython-312.pyc
+|   |           urls.cpython-312.pyc
+|   |           views.cpython-312.pyc
+|   |           __init__.cpython-312.pyc
+|   |           
+|   \---__pycache__
+|           __init__.cpython-312.pyc
+|           
 +---core
 |   |   asgi.py
 |   |   settings.py
@@ -124,12 +345,14 @@ D:.
 |           
 +---manager
 |   |   .env
+|   |   admin.md
 |   |   admin.py
 |   |   apps.py
 |   |   copy.md
 |   |   detect_crop.py
 |   |   generation_services.py
 |   |   mockup_processor.py
+|   |   models.md
 |   |   models.py
 |   |   scraper.py
 |   |   seo_service.py
@@ -220,7 +443,16 @@ D:.
 |   |   |   |   generate_variations.py
 |   |   |   |   process_designs.py
 |   |   |   |   scrape_url.py
+|   |   |   |   test_detect_crop_pipeline.py
+|   |   |   |   test_e2e_pipeline2.py
+|   |   |   |   test_generation.py
+|   |   |   |   test_manual_upload.py
 |   |   |   |   test_mockup.py
+|   |   |   |   test_mockup_pipeline.py
+|   |   |   |   test_scrape.py
+|   |   |   |   test_seo.py
+|   |   |   |   test_upscale_bg_remove.py
+|   |   |   |   test_vision_seo.py
 |   |   |   |   __init__.py
 |   |   |   |   
 |   |   |   \---__pycache__
@@ -233,8 +465,17 @@ D:.
 |   |   |           test_ai.cpython-312.pyc
 |   |   |           test_ai.cpython-314.pyc
 |   |   |           test_ai2.cpython-312.pyc
+|   |   |           test_detect_crop_pipeline.cpython-312.pyc
+|   |   |           test_e2e_pipeline2.cpython-312.pyc
+|   |   |           test_generation.cpython-312.pyc
+|   |   |           test_manual_upload.cpython-312.pyc
 |   |   |           test_mockup.cpython-312.pyc
+|   |   |           test_mockup_pipeline.cpython-312.pyc
+|   |   |           test_scrape.cpython-312.pyc
 |   |   |           test_scrape.cpython-314.pyc
+|   |   |           test_seo.cpython-312.pyc
+|   |   |           test_upscale_bg_remove.cpython-312.pyc
+|   |   |           test_vision_seo.cpython-312.pyc
 |   |   |           __init__.cpython-312.pyc
 |   |   |           __init__.cpython-314.pyc
 |   |   |           
@@ -249,6 +490,7 @@ D:.
 |   |   |   0004_manualupload_alter_seooptimization_product_and_more.py
 |   |   |   0005_manualupload_status_mockup_manualupload_status_seo.py
 |   |   |   0006_manualupload_original_filename.py
+|   |   |   0007_alter_etsyproduct_unique_together_and_more.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
@@ -262,6 +504,7 @@ D:.
 |   |           0004_manualupload_alter_seooptimization_product_and_more.cpython-312.pyc
 |   |           0005_manualupload_status_mockup_manualupload_status_seo.cpython-312.pyc
 |   |           0006_manualupload_original_filename.cpython-312.pyc
+|   |           0007_alter_etsyproduct_unique_together_and_more.cpython-312.pyc
 |   |           __init__.cpython-312.pyc
 |   |           __init__.cpython-314.pyc
 |   |           
@@ -321,6 +564,7 @@ D:.
 |   |   +---Lib
 |   |   |   \---site-packages
 |   |   |       |   typing_extensions.py
+|   |   |       |   _cffi_backend.cp312-win_amd64.pyd
 |   |   |       |   
 |   |   |       +---annotated_types
 |   |   |       |   |   py.typed
@@ -513,6 +757,62 @@ D:.
 |   |   |       |   \---licenses
 |   |   |       |           LICENSE
 |   |   |       |           
+|   |   |       +---cffi
+|   |   |       |   |   api.py
+|   |   |       |   |   backend_ctypes.py
+|   |   |       |   |   cffi_opcode.py
+|   |   |       |   |   commontypes.py
+|   |   |       |   |   cparser.py
+|   |   |       |   |   error.py
+|   |   |       |   |   ffiplatform.py
+|   |   |       |   |   lock.py
+|   |   |       |   |   model.py
+|   |   |       |   |   parse_c_type.h
+|   |   |       |   |   pkgconfig.py
+|   |   |       |   |   recompiler.py
+|   |   |       |   |   setuptools_ext.py
+|   |   |       |   |   vengine_cpy.py
+|   |   |       |   |   vengine_gen.py
+|   |   |       |   |   verifier.py
+|   |   |       |   |   _cffi_errors.h
+|   |   |       |   |   _cffi_include.h
+|   |   |       |   |   _embedding.h
+|   |   |       |   |   _imp_emulation.py
+|   |   |       |   |   _shimmed_dist_utils.py
+|   |   |       |   |   __init__.py
+|   |   |       |   |   
+|   |   |       |   \---__pycache__
+|   |   |       |           api.cpython-312.pyc
+|   |   |       |           backend_ctypes.cpython-312.pyc
+|   |   |       |           cffi_opcode.cpython-312.pyc
+|   |   |       |           commontypes.cpython-312.pyc
+|   |   |       |           cparser.cpython-312.pyc
+|   |   |       |           error.cpython-312.pyc
+|   |   |       |           ffiplatform.cpython-312.pyc
+|   |   |       |           lock.cpython-312.pyc
+|   |   |       |           model.cpython-312.pyc
+|   |   |       |           pkgconfig.cpython-312.pyc
+|   |   |       |           recompiler.cpython-312.pyc
+|   |   |       |           setuptools_ext.cpython-312.pyc
+|   |   |       |           vengine_cpy.cpython-312.pyc
+|   |   |       |           vengine_gen.cpython-312.pyc
+|   |   |       |           verifier.cpython-312.pyc
+|   |   |       |           _imp_emulation.cpython-312.pyc
+|   |   |       |           _shimmed_dist_utils.cpython-312.pyc
+|   |   |       |           __init__.cpython-312.pyc
+|   |   |       |           
+|   |   |       +---cffi-2.0.0.dist-info
+|   |   |       |   |   entry_points.txt
+|   |   |       |   |   INSTALLER
+|   |   |       |   |   METADATA
+|   |   |       |   |   RECORD
+|   |   |       |   |   top_level.txt
+|   |   |       |   |   WHEEL
+|   |   |       |   |   
+|   |   |       |   \---licenses
+|   |   |       |           AUTHORS
+|   |   |       |           LICENSE
+|   |   |       |           
 |   |   |       +---charset_normalizer
 |   |   |       |   |   api.py
 |   |   |       |   |   cd.py
@@ -558,6 +858,276 @@ D:.
 |   |   |       |   |   
 |   |   |       |   \---licenses
 |   |   |       |           LICENSE
+|   |   |       |           
+|   |   |       +---cryptography
+|   |   |       |   |   exceptions.py
+|   |   |       |   |   fernet.py
+|   |   |       |   |   py.typed
+|   |   |       |   |   utils.py
+|   |   |       |   |   __about__.py
+|   |   |       |   |   __init__.py
+|   |   |       |   |   
+|   |   |       |   +---hazmat
+|   |   |       |   |   |   _oid.py
+|   |   |       |   |   |   __init__.py
+|   |   |       |   |   |   
+|   |   |       |   |   +---asn1
+|   |   |       |   |   |   |   asn1.py
+|   |   |       |   |   |   |   __init__.py
+|   |   |       |   |   |   |   
+|   |   |       |   |   |   \---__pycache__
+|   |   |       |   |   |           asn1.cpython-312.pyc
+|   |   |       |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |           
+|   |   |       |   |   +---backends
+|   |   |       |   |   |   |   __init__.py
+|   |   |       |   |   |   |   
+|   |   |       |   |   |   +---openssl
+|   |   |       |   |   |   |   |   backend.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           backend.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   \---__pycache__
+|   |   |       |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |           
+|   |   |       |   |   +---bindings
+|   |   |       |   |   |   |   _rust.pyd
+|   |   |       |   |   |   |   __init__.py
+|   |   |       |   |   |   |   
+|   |   |       |   |   |   +---openssl
+|   |   |       |   |   |   |   |   binding.py
+|   |   |       |   |   |   |   |   _conditional.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           binding.cpython-312.pyc
+|   |   |       |   |   |   |           _conditional.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   +---_rust
+|   |   |       |   |   |   |   |   asn1.pyi
+|   |   |       |   |   |   |   |   declarative_asn1.pyi
+|   |   |       |   |   |   |   |   exceptions.pyi
+|   |   |       |   |   |   |   |   ocsp.pyi
+|   |   |       |   |   |   |   |   pkcs12.pyi
+|   |   |       |   |   |   |   |   pkcs7.pyi
+|   |   |       |   |   |   |   |   test_support.pyi
+|   |   |       |   |   |   |   |   x509.pyi
+|   |   |       |   |   |   |   |   _openssl.pyi
+|   |   |       |   |   |   |   |   __init__.pyi
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---openssl
+|   |   |       |   |   |   |           aead.pyi
+|   |   |       |   |   |   |           ciphers.pyi
+|   |   |       |   |   |   |           cmac.pyi
+|   |   |       |   |   |   |           dh.pyi
+|   |   |       |   |   |   |           dsa.pyi
+|   |   |       |   |   |   |           ec.pyi
+|   |   |       |   |   |   |           ed25519.pyi
+|   |   |       |   |   |   |           ed448.pyi
+|   |   |       |   |   |   |           hashes.pyi
+|   |   |       |   |   |   |           hmac.pyi
+|   |   |       |   |   |   |           hpke.pyi
+|   |   |       |   |   |   |           kdf.pyi
+|   |   |       |   |   |   |           keys.pyi
+|   |   |       |   |   |   |           mldsa.pyi
+|   |   |       |   |   |   |           mlkem.pyi
+|   |   |       |   |   |   |           poly1305.pyi
+|   |   |       |   |   |   |           rsa.pyi
+|   |   |       |   |   |   |           x25519.pyi
+|   |   |       |   |   |   |           x448.pyi
+|   |   |       |   |   |   |           __init__.pyi
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   \---__pycache__
+|   |   |       |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |           
+|   |   |       |   |   +---decrepit
+|   |   |       |   |   |   |   __init__.py
+|   |   |       |   |   |   |   
+|   |   |       |   |   |   +---ciphers
+|   |   |       |   |   |   |   |   algorithms.py
+|   |   |       |   |   |   |   |   modes.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           algorithms.cpython-312.pyc
+|   |   |       |   |   |   |           modes.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   \---__pycache__
+|   |   |       |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |           
+|   |   |       |   |   +---primitives
+|   |   |       |   |   |   |   cmac.py
+|   |   |       |   |   |   |   constant_time.py
+|   |   |       |   |   |   |   hashes.py
+|   |   |       |   |   |   |   hmac.py
+|   |   |       |   |   |   |   hpke.py
+|   |   |       |   |   |   |   keywrap.py
+|   |   |       |   |   |   |   padding.py
+|   |   |       |   |   |   |   poly1305.py
+|   |   |       |   |   |   |   _asymmetric.py
+|   |   |       |   |   |   |   _cipheralgorithm.py
+|   |   |       |   |   |   |   _modes.py
+|   |   |       |   |   |   |   _serialization.py
+|   |   |       |   |   |   |   __init__.py
+|   |   |       |   |   |   |   
+|   |   |       |   |   |   +---asymmetric
+|   |   |       |   |   |   |   |   dh.py
+|   |   |       |   |   |   |   |   dsa.py
+|   |   |       |   |   |   |   |   ec.py
+|   |   |       |   |   |   |   |   ed25519.py
+|   |   |       |   |   |   |   |   ed448.py
+|   |   |       |   |   |   |   |   mldsa.py
+|   |   |       |   |   |   |   |   mlkem.py
+|   |   |       |   |   |   |   |   padding.py
+|   |   |       |   |   |   |   |   rsa.py
+|   |   |       |   |   |   |   |   types.py
+|   |   |       |   |   |   |   |   utils.py
+|   |   |       |   |   |   |   |   x25519.py
+|   |   |       |   |   |   |   |   x448.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           dh.cpython-312.pyc
+|   |   |       |   |   |   |           dsa.cpython-312.pyc
+|   |   |       |   |   |   |           ec.cpython-312.pyc
+|   |   |       |   |   |   |           ed25519.cpython-312.pyc
+|   |   |       |   |   |   |           ed448.cpython-312.pyc
+|   |   |       |   |   |   |           mldsa.cpython-312.pyc
+|   |   |       |   |   |   |           mlkem.cpython-312.pyc
+|   |   |       |   |   |   |           padding.cpython-312.pyc
+|   |   |       |   |   |   |           rsa.cpython-312.pyc
+|   |   |       |   |   |   |           types.cpython-312.pyc
+|   |   |       |   |   |   |           utils.cpython-312.pyc
+|   |   |       |   |   |   |           x25519.cpython-312.pyc
+|   |   |       |   |   |   |           x448.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   +---ciphers
+|   |   |       |   |   |   |   |   aead.py
+|   |   |       |   |   |   |   |   algorithms.py
+|   |   |       |   |   |   |   |   base.py
+|   |   |       |   |   |   |   |   modes.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           aead.cpython-312.pyc
+|   |   |       |   |   |   |           algorithms.cpython-312.pyc
+|   |   |       |   |   |   |           base.cpython-312.pyc
+|   |   |       |   |   |   |           modes.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   +---kdf
+|   |   |       |   |   |   |   |   argon2.py
+|   |   |       |   |   |   |   |   concatkdf.py
+|   |   |       |   |   |   |   |   hkdf.py
+|   |   |       |   |   |   |   |   kbkdf.py
+|   |   |       |   |   |   |   |   pbkdf2.py
+|   |   |       |   |   |   |   |   scrypt.py
+|   |   |       |   |   |   |   |   x963kdf.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           argon2.cpython-312.pyc
+|   |   |       |   |   |   |           concatkdf.cpython-312.pyc
+|   |   |       |   |   |   |           hkdf.cpython-312.pyc
+|   |   |       |   |   |   |           kbkdf.cpython-312.pyc
+|   |   |       |   |   |   |           pbkdf2.cpython-312.pyc
+|   |   |       |   |   |   |           scrypt.cpython-312.pyc
+|   |   |       |   |   |   |           x963kdf.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   +---serialization
+|   |   |       |   |   |   |   |   base.py
+|   |   |       |   |   |   |   |   pkcs12.py
+|   |   |       |   |   |   |   |   pkcs7.py
+|   |   |       |   |   |   |   |   ssh.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           base.cpython-312.pyc
+|   |   |       |   |   |   |           pkcs12.cpython-312.pyc
+|   |   |       |   |   |   |           pkcs7.cpython-312.pyc
+|   |   |       |   |   |   |           ssh.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   +---twofactor
+|   |   |       |   |   |   |   |   hotp.py
+|   |   |       |   |   |   |   |   totp.py
+|   |   |       |   |   |   |   |   __init__.py
+|   |   |       |   |   |   |   |   
+|   |   |       |   |   |   |   \---__pycache__
+|   |   |       |   |   |   |           hotp.cpython-312.pyc
+|   |   |       |   |   |   |           totp.cpython-312.pyc
+|   |   |       |   |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |   |           
+|   |   |       |   |   |   \---__pycache__
+|   |   |       |   |   |           cmac.cpython-312.pyc
+|   |   |       |   |   |           constant_time.cpython-312.pyc
+|   |   |       |   |   |           hashes.cpython-312.pyc
+|   |   |       |   |   |           hmac.cpython-312.pyc
+|   |   |       |   |   |           hpke.cpython-312.pyc
+|   |   |       |   |   |           keywrap.cpython-312.pyc
+|   |   |       |   |   |           padding.cpython-312.pyc
+|   |   |       |   |   |           poly1305.cpython-312.pyc
+|   |   |       |   |   |           _asymmetric.cpython-312.pyc
+|   |   |       |   |   |           _cipheralgorithm.cpython-312.pyc
+|   |   |       |   |   |           _modes.cpython-312.pyc
+|   |   |       |   |   |           _serialization.cpython-312.pyc
+|   |   |       |   |   |           __init__.cpython-312.pyc
+|   |   |       |   |   |           
+|   |   |       |   |   \---__pycache__
+|   |   |       |   |           _oid.cpython-312.pyc
+|   |   |       |   |           __init__.cpython-312.pyc
+|   |   |       |   |           
+|   |   |       |   +---x509
+|   |   |       |   |   |   base.py
+|   |   |       |   |   |   certificate_transparency.py
+|   |   |       |   |   |   extensions.py
+|   |   |       |   |   |   general_name.py
+|   |   |       |   |   |   name.py
+|   |   |       |   |   |   ocsp.py
+|   |   |       |   |   |   oid.py
+|   |   |       |   |   |   verification.py
+|   |   |       |   |   |   __init__.py
+|   |   |       |   |   |   
+|   |   |       |   |   \---__pycache__
+|   |   |       |   |           base.cpython-312.pyc
+|   |   |       |   |           certificate_transparency.cpython-312.pyc
+|   |   |       |   |           extensions.cpython-312.pyc
+|   |   |       |   |           general_name.cpython-312.pyc
+|   |   |       |   |           name.cpython-312.pyc
+|   |   |       |   |           ocsp.cpython-312.pyc
+|   |   |       |   |           oid.cpython-312.pyc
+|   |   |       |   |           verification.cpython-312.pyc
+|   |   |       |   |           __init__.cpython-312.pyc
+|   |   |       |   |           
+|   |   |       |   \---__pycache__
+|   |   |       |           exceptions.cpython-312.pyc
+|   |   |       |           fernet.cpython-312.pyc
+|   |   |       |           utils.cpython-312.pyc
+|   |   |       |           __about__.cpython-312.pyc
+|   |   |       |           __init__.cpython-312.pyc
+|   |   |       |           
+|   |   |       +---cryptography-47.0.0.dist-info
+|   |   |       |   |   INSTALLER
+|   |   |       |   |   METADATA
+|   |   |       |   |   RECORD
+|   |   |       |   |   REQUESTED
+|   |   |       |   |   WHEEL
+|   |   |       |   |   
+|   |   |       |   +---licenses
+|   |   |       |   |       LICENSE
+|   |   |       |   |       LICENSE.APACHE
+|   |   |       |   |       LICENSE.BSD
+|   |   |       |   |       
+|   |   |       |   \---sboms
+|   |   |       |           cryptography-rust.cyclonedx.json
+|   |   |       |           sbom.json
 |   |   |       |           
 |   |   |       +---cv2
 |   |   |       |   |   config-3.py
@@ -13516,6 +14086,35 @@ D:.
 |   |   |       |   \---licenses
 |   |   |       |           LICENSE
 |   |   |       |           
+|   |   |       +---pycparser
+|   |   |       |   |   ast_transforms.py
+|   |   |       |   |   c_ast.py
+|   |   |       |   |   c_generator.py
+|   |   |       |   |   c_lexer.py
+|   |   |       |   |   c_parser.py
+|   |   |       |   |   _ast_gen.py
+|   |   |       |   |   _c_ast.cfg
+|   |   |       |   |   __init__.py
+|   |   |       |   |   
+|   |   |       |   \---__pycache__
+|   |   |       |           ast_transforms.cpython-312.pyc
+|   |   |       |           c_ast.cpython-312.pyc
+|   |   |       |           c_generator.cpython-312.pyc
+|   |   |       |           c_lexer.cpython-312.pyc
+|   |   |       |           c_parser.cpython-312.pyc
+|   |   |       |           _ast_gen.cpython-312.pyc
+|   |   |       |           __init__.cpython-312.pyc
+|   |   |       |           
+|   |   |       +---pycparser-3.0.dist-info
+|   |   |       |   |   INSTALLER
+|   |   |       |   |   METADATA
+|   |   |       |   |   RECORD
+|   |   |       |   |   top_level.txt
+|   |   |       |   |   WHEEL
+|   |   |       |   |   
+|   |   |       |   \---licenses
+|   |   |       |           LICENSE
+|   |   |       |           
 |   |   |       +---pydantic
 |   |   |       |   |   aliases.py
 |   |   |       |   |   alias_generators.py
@@ -14924,82 +15523,174 @@ D:.
 |           
 \---media
     +---crops
+    |       crop_1.png
     |       crop_2.png
+    |       crop_2_vWn8wR2.png
     |       crop_3.png
+    |       crop_3_OYosMm1.png
     |       crop_4.png
     |       
     +---designs
     |   +---generated
+    |   |       flux-2-pro_1_3.png
     |   |       flux-2-pro_2_4.png
+    |   |       flux-2-pro_2_9.png
+    |   |       flux-2-pro_3_5.png
     |   |       flux-2-pro_3_8.png
     |   |       flux-2-pro_4_10.png
+    |   |       nano-banana_1_1.png
+    |   |       nano-banana_1_2.png
     |   |       nano-banana_2_3.png
+    |   |       nano-banana_2_7.png
+    |   |       nano-banana_3_4.png
     |   |       nano-banana_3_7.png
     |   |       nano-banana_4_9.png
     |   |       seedream-4.5_2_5.png
+    |   |       seedream-4.5_2_8.png
     |   |       seedream-4.5_3_6.png
     |   |       seedream-4.5_4_11.png
+    |   |       seedream-4_m71eVa8.5_3_6.png
     |   |       
     |   +---transparent
+    |   |       nobg_1_3.png
     |   |       nobg_2_3.png
     |   |       nobg_2_4.png
+    |   |       nobg_2_7.png
+    |   |       nobg_3_4.png
     |   |       nobg_3_7.png
     |   |       nobg_4_9.png
     |   |       
     |   \---upscaled
-    +---generated_mockups
-    |   +---4
-    |   |       mockup_9_1.png
-    |   |       mockup_9_10.png
-    |   |       mockup_9_11.png
-    |   |       mockup_9_12.png
-    |   |       mockup_9_13.png
-    |   |       mockup_9_14.png
-    |   |       mockup_9_15.png
-    |   |       mockup_9_16.png
-    |   |       mockup_9_2.png
-    |   |       mockup_9_8.png
-    |   |       mockup_9_9.png
-    |   |       
-    |   \---manual
-    |       \---21
-    |               mockup_man_21_1.png
-    |               mockup_man_21_2.png
-    |               
+    |           upscaled_1_3.png
+    |           
     +---manual_uploads
-    |   \---designs
-    |           128.png
-    |           
-    +---mockups
-    |   +---items
-    |   |       01_Ivory_CC_1.jpeg
-    |   |       1717BlueJean_1.jpeg
-    |   |       1717crismon_6_1.jpeg
-    |   |       1717espresso_1.jpeg
-    |   |       1717ivory5_1.jpeg
-    |   |       1717moss_6_1.jpeg
-    |   |       1717seafoam_1.jpeg
-    |   |       BLACK_C1717_CARMOCKS_MBLF_7_1.png
-    |   |       BLUESPRUCE_C1717_CARMOCKS_MBLF_4_1.png
-    |   |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Black___Medium_FR_1_1.jpeg
-    |   |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Blue_Jean___Medium_FR_1_1.jpeg
-    |   |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Pepper___Medium_FR_2_1.jpeg
-    |   |       Grey_1.jpeg
-    |   |       IVORY_C1717_CARMOCKS_MBLF_8_1.png
-    |   |       LightGreen_C1717bohoflatlay_MBLF_71524_3_1.png
-    |   |       PEPPER_C1717_CARMOCKS_MBLF_5_1.png
+    |   +---1e
+    |   |       1eb87c9f6c34b792246d1404843d6978.png
     |   |       
-    |   \---templates
-    |           1717BlueJean_1.jpeg
+    |   +---35
+    |   |       355870d279e677adb5833f2699a6bdfa.png
+    |   |       
+    |   +---44
+    |   |       44e65d76152f61eeab9862c0a57eb2ec.png
+    |   |       
+    |   +---84
+    |   |       84758a61b8828affbb20ba47a16c3438.png
+    |   |       
+    |   +---b0
+    |   |       b07e8a21a4adbf2de06fdd91ccd0afc4.png
+    |   |       
+    |   +---b2
+    |   |       b24e58a84e5d0ec2e43e5419fcb070b5.png
+    |   |       
+    |   +---c5
+    |   |       c57648f49c386edb8189cfe803b5eb79.png
+    |   |       
+    |   \---ec
+    |           ecd0dca6b645ba8fb4026c559cfb18c4.png
     |           
-    \---test_output
-            db_test_result_10.png
-            db_test_result_11.png
-            db_test_result_12.png
-            db_test_result_13.png
-            db_test_result_14.png
-            db_test_result_15.png
-            db_test_result_16.png
-            db_test_result_8.png
-            db_test_result_9.png
-            
+    \---mockups
+        +---items
+        |       01_Ivory_CC_1.jpeg
+        |       1717BlueJean.jpg
+        |       1717BlueJean_1.jpeg
+        |       1717crismon_6_1.jpeg
+        |       1717espresso_1.jpeg
+        |       1717ivory5_1.jpeg
+        |       1717moss_6_1.jpeg
+        |       1717seafoam_1.jpeg
+        |       BLACK_C1717_CARMOCKS_MBLF-7.png
+        |       BLACK_C1717_CARMOCKS_MBLF_7_1.png
+        |       BLUEJEAN_BRIGHTBOHOC1717_MBLF-3.png
+        |       BLUESPRUCE_C1717_CARMOCKS_MBLF-4.png
+        |       BLUESPRUCE_C1717_CARMOCKS_MBLF_4_1.png
+        |       GOLDIE_MOCKS_-_Comfort_Colors_1717_-_GM016_Orchid_-_Medium_FR_1.jpg
+        |       GOLDIE_MOCKS_-_Comfort_Colors_1717_-_GM016_Pepper_-_Medium_FR_2.jpg
+        |       GOLDIE_MOCKS_-_Comfort_Colors_1717_-_GM016_Violet_-_Medium_FR_1.jpg
+        |       GOLDIE_MOCKS_-_Comfort_Colors_1717_-_GM016_White_-_Medium_FR_2.jpg
+        |       GOLDIE_MOCKS_-_Comfort_Colors_1717_-_GM016_Yam_-_Medium_FR_1.jpg
+        |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Black___Medium_FR_1_1.jpeg
+        |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Blue_Jean___Medium_FR_1_1.jpeg
+        |       GOLDIE_MOCKS___Comfort_Colors_1717___GM016_Pepper___Medium_FR_2_1.jpeg
+        |       Grey_1.jpeg
+        |       IceBlue_C1717bohoflatlay_MBLF_71524-31.png
+        |       IVORY_C1717_CARMOCKS_MBLF_8_1.png
+        |       LightGreen_C1717bohoflatlay_MBLF_71524_3_1.png
+        |       PEPPER_C1717_CARMOCKS_MBLF_5_1.png
+        |       Template_01_Ivory_CC_1.jpeg_1.jpeg
+        |       Template_01_Ivory_CC_1_4BcH5RE.jpeg_1.jpeg
+        |       Template_1717BlueJean_1.jpeg_1.jpeg
+        |       Template_1717BlueJean_1_NvcmOre.jpeg_1.jpeg
+        |       Template_1717crismon_6_1.jpeg_1.jpeg
+        |       Template_1717crismon_6_1_l6peJFU.jpeg_1.jpeg
+        |       Template_1717espresso_1.jpeg_1.jpeg
+        |       Template_1717espresso_1_Lu6UpMP.jpeg_1.jpeg
+        |       Template_1717ivory5_1.jpeg_1.jpeg
+        |       Template_1717ivory5_1_aobzvUK.jpeg_1.jpeg
+        |       Test_Mockup_Template_1.jpeg
+        |       Test_Siyah_Tiþört_1.jpeg
+        |       
+        +---results
+        |       result_4_13.png
+        |       result_4_14.png
+        |       result_4_15.png
+        |       result_4_16.png
+        |       result_4_17.png
+        |       result_4_18.png
+        |       result_4_19.png
+        |       result_4_20.png
+        |       result_4_21.png
+        |       result_4_22.png
+        |       result_7_13.png
+        |       result_7_14.png
+        |       result_7_15.png
+        |       result_7_16.png
+        |       result_7_17.png
+        |       result_7_18.png
+        |       result_7_19.png
+        |       result_7_20.png
+        |       result_7_21.png
+        |       result_7_22.png
+        |       result_manual_16_13.png
+        |       result_manual_16_14.png
+        |       result_manual_16_15.png
+        |       result_manual_16_16.png
+        |       result_manual_16_17.png
+        |       result_manual_17_13.png
+        |       result_manual_17_14.png
+        |       result_manual_17_15.png
+        |       result_manual_17_16.png
+        |       result_manual_17_17.png
+        |       result_manual_18_18.png
+        |       result_manual_18_19.png
+        |       result_manual_18_20.png
+        |       result_manual_18_21.png
+        |       result_manual_18_22.png
+        |       result_manual_19_18.png
+        |       result_manual_19_19.png
+        |       result_manual_19_20.png
+        |       result_manual_19_21.png
+        |       result_manual_19_22.png
+        |       result_manual_20_18.png
+        |       result_manual_20_19.png
+        |       result_manual_20_20.png
+        |       result_manual_20_21.png
+        |       result_manual_20_22.png
+        |       result_manual_21_13.png
+        |       result_manual_21_14.png
+        |       result_manual_21_15.png
+        |       result_manual_21_16.png
+        |       result_manual_21_17.png
+        |       result_manual_22_13.png
+        |       result_manual_22_14.png
+        |       result_manual_22_15.png
+        |       result_manual_22_16.png
+        |       result_manual_22_17.png
+        |       result_manual_23_13.png
+        |       result_manual_23_14.png
+        |       result_manual_23_15.png
+        |       result_manual_23_16.png
+        |       result_manual_23_17.png
+        |       
+        \---templates
+                1717BlueJean_1.jpeg
+                

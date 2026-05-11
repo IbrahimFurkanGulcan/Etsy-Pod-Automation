@@ -16,5 +16,7 @@ urlpatterns = [
     path('app/settings/', views.settings_hub_view, name='settings'),
     path('app/settings/pipeline/', views.settings_pipeline_view, name='settings_pipeline'), # EKSİKTİ, EKLENDİ
     path('app/settings/mockups/', mockup_templates_page, name='mockup_templates'), # URL'si settings altına alındı
-    path('app/settings/history/tshirt/', views.history_tshirt_view, name='history_tshirt'), # URL'si settings altına alındı
+    path('app/settings/history/tshirt/', views.tshirt_history_view, name='tshirt_history'), # URL'si settings altına alındı
+    
+    
 ]

@@ -7,4 +7,5 @@ urlpatterns = [
     # Pipeline 1 Export Endpoint
     path('api/export-pipeline1/', views.export_pipeline1_action, name='export_pipeline1'),
     path('api/export-pipeline2/', views.export_pipeline2_action, name='export_pipeline2_action'),
+    path('api/get-history/', views.get_history_api, name='get_history_api'),
 ]
