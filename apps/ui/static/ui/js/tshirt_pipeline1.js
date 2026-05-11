@@ -1,6 +1,7 @@
 // Sayfa yüklendiğinde hafızadaki verileri geri getir
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded',  () => {
     restoreFromStorage();
+    checkUrlAndLoad();
 });
 
 // ==========================================
@@ -31,7 +32,7 @@ function restoreFromStorage() {
     const savedGenerated = JSON.parse(localStorage.getItem('last_generated_results'));
     const savedMapping = JSON.parse(localStorage.getItem('mockup_mapping'));
     const savedMockupResults = JSON.parse(localStorage.getItem('mockup_results_cache'));
-    const savedSeoResults = JSON.parse(localStorage.getItem('seo_results_cache')); // Yeni
+    const savedSeoResults = JSON.parse(localStorage.getItem('seo_results_cache'));
 
     // 1. Önce her şeyi gizle
     ['page-analyze', 'page-generate', 'page-mockup', 'page-seo'].forEach(id => {
@@ -82,15 +83,12 @@ function restoreFromStorage() {
                         document.getElementById('page-seo').classList.remove('hidden');
                         goToSEOPage(); // Sayfayı çiz
                         
-                        // YENİ: Daha önce üretilmiş SEO metinlerini kutulara geri doldur
                         if (savedSeoResults) {
                             for (const [d_id, res] of Object.entries(savedSeoResults)) {
                                 const tInput = document.getElementById(`seo-title-${d_id}`);
                                 const gInput = document.getElementById(`seo-tags-${d_id}`);
                                 if (tInput && res.title) tInput.value = res.title;
                                 if (gInput && res.tags) gInput.value = res.tags;
-                                
-                                // Export butonunu görünür yap
                                 document.getElementById('export-container')?.classList.remove('hidden');
                             }
                         }
@@ -98,6 +96,19 @@ function restoreFromStorage() {
                 });
             }
         }
+    }
+
+    // ✅ GÜVENLİK AĞI (FALLBACK): Koşullar sağlanamadığı için hiçbir sayfa açılmadıysa analiz ekranını göster
+    const anyVisible = ['page-analyze', 'page-generate', 'page-mockup', 'page-seo']
+        .some(id => {
+            const el = document.getElementById(id);
+            return el && !el.classList.contains('hidden');
+        });
+
+    if (!anyVisible) {
+        console.warn('Hafızadaki veriler mevcut sayfayı göstermek için yetersiz. Analiz aşamasına dönülüyor.');
+        document.getElementById('page-analyze')?.classList.remove('hidden');
+        localStorage.setItem('current_page', 'page-analyze');
     }
 }
 
@@ -1248,5 +1259,69 @@ async function exportPipeline1() {
     } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
+    }
+}
+
+// ==========================================
+// KÜTÜPHANEDEN TRANSFER YAKALAYICI (YENİ EKLENDİ)
+// ==========================================
+async function checkUrlAndLoad() {
+    const params = new URLSearchParams(window.location.search);
+    const loadIds = params.get('load_variations'); // Örn: "12,15"
+    
+    if (loadIds) {
+        const idsArray = loadIds.split(',');
+        
+        // 1. Arayüzü analizden çıkartıp Generate sayfasına hazırla
+        document.getElementById('page-analyze').classList.add('hidden');
+        const pageGenerate = document.getElementById('page-generate');
+        pageGenerate.classList.remove('hidden');
+        
+        const container = document.getElementById('generated-images-container');
+        container.innerHTML = `<div class="col-span-full text-center py-10"><i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-500 mb-3"></i><p>Transfer edilen tasarımlar getiriliyor...</p></div>`;
+        
+        try {
+            // Backend'i yormadan, daha önce yazdığımız Kütüphane API'sinden bu resimleri bul
+            const res = await fetch('/common/api/get-assets/?type=ai&limit=500');
+            const data = await res.json();
+            
+            if (data.status === 'success') {
+                const groupedData = {};
+                
+                data.assets.forEach(asset => {
+                    if (idsArray.includes(String(asset.real_id))) {
+                        const groupName = asset.source || "Kütüphane Transferi";
+                        if (!groupedData[groupName]) groupedData[groupName] = [];
+                        
+                        groupedData[groupName].push({
+                            id: asset.real_id,
+                            src: asset.url,
+                            is_processed: !asset.has_bg, // Arka planı yoksa zaten işlenmiş demektir
+                            no_bg_src: !asset.has_bg ? asset.url : null,
+                            model: "Transfer"
+                        });
+                    }
+                });
+                
+                // 2. P1'in kendi render fonksiyonunu tetikleyip ekrana bas
+                renderBulkGeneratedImages(groupedData);
+                
+                setTimeout(() => {
+                    // Kullanıcı yorulmasın diye gelen tüm görsellerin Checkbox'ını otomatik işaretle
+                    document.querySelectorAll('.gen-checkbox').forEach(cb => cb.checked = true);
+                    
+                    // Sayfayı İşlem alanına doğru yumuşak kaydır!
+                    pageGenerate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Eğer gelen tasarımların "hepsinin" arka planı zaten saydamsa, direkt "Mockup Hazırla" butonunu aç
+                    const allProcessed = Object.values(groupedData).flat().every(img => img.is_processed);
+                    if(allProcessed) {
+                        document.getElementById('btn-go-to-mockup').classList.remove('hidden');
+                    }
+                }, 400);
+            }
+        } catch (err) {
+            container.innerHTML = `<p class="text-red-500 text-center col-span-full">Tasarımlar yüklenemedi.</p>`;
+        }
     }
 }

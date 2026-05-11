@@ -60,6 +60,16 @@
                 </li>
 
                 <li class="pt-4 pb-2">
+                    <span class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kütüphane</span>
+                </li>
+                <li>
+                    <a href="{% url 'ui:asset_library' %}" class="flex items-center px-3 py-2.5 rounded-lg hover:bg-slate-800 transition text-slate-300 {% block nav_assets %}{% endblock %}">
+                        <i class="fa-solid fa-images w-6 text-sky-400"></i>
+                        <span class="font-medium">Tasarım Kütüphanesi</span>
+                    </a>
+                </li>
+
+                <li class="pt-4 pb-2">
                     <span class="px-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Kayıtlar</span>
                 </li>
                 <li>

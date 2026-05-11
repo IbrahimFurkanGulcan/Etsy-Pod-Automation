@@ -10,6 +10,7 @@ let allTemplates = [];        // Veritabanından gelen tüm şablonlar
 let activeRowIndex = null;    // En son tıklanan satır (Mavi vurgu için)
 let pendingProcessSettings = {};
 let currentProcessedIds = [];
+let libraryCache = []; 
 
 // CSRF Token Okuyucu
 function getCookie(name) {
@@ -108,11 +109,36 @@ function clearSession() {
 // ==========================================
 // SAYFA YÜKLENDİĞİNDE
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-    fetchMockupTemplates(); // Await ekledik ki şablonlar önce yüklensin
-    fetchUserLibrary(); 
+document.addEventListener('DOMContentLoaded', async () => {
+    fetchMockupTemplates(); 
+    await fetchUserLibrary(); 
     restoreAppState();
-    
+
+
+    const params = new URLSearchParams(window.location.search);
+    const loadIds = params.get('load_uploads');
+
+    if (loadIds) {
+        const ids = loadIds.split(',');
+        ids.forEach(idStr => {
+            const id = parseInt(idStr);
+            const design = libraryCache.find(d => d.id === id);
+            // Tasarımı sanki kullanıcı seçmiş gibi otomatik sepete ekle
+            if (design) addFromLibrary(design.id, design.url, design.name);
+        });
+
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Tasarımlar eklendikten sonra "Mockup Şablon Havuzu"na otomatik kaydır!
+        setTimeout(() => {
+            const poolSection = document.getElementById('mockup-pool-section');
+            if(poolSection) {
+                poolSection.classList.remove('hidden');
+                poolSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 500);
+    }
+
     const fileInput = document.getElementById('manual-file-input');
     const dropzone = document.getElementById('dropzone');
     
@@ -142,10 +168,14 @@ async function fetchUserLibrary() {
     if(!grid) return;
 
     try {
-        const response = await fetch('/products/api/get-library/');
+        const params = new URLSearchParams(window.location.search);
+        const loadIds = params.get('load_uploads') || '';
+
+        const response = await fetch('/products/api/get-library/?t=' + new Date().getTime());
         const data = await response.json();
         
         if (data.status === "success" && data.designs.length > 0) {
+            libraryCache = data.designs;
             grid.innerHTML = '';
             data.designs.forEach(design => {
                 grid.insertAdjacentHTML('beforeend', `

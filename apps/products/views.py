@@ -111,11 +111,28 @@ def get_batch_mockups(request, upload_id):
 def get_user_library(request):
     """Kullanıcının daha önce yüklediği tasarımları (Kütüphane) getirir."""
     if request.method == "GET":
-        # Son 30 tasarımı getir (Mükerrerleri engellemek için)
-        uploads = ManualUpload.objects.filter(group__user=request.user).order_by('-created_at')[:30]
+               
+        # URL'den özel ID'ler istenmişse onları yakala
+        requested_ids = request.GET.get('ids', '')
+        
+        # Son 30 tasarımı getir (Standart kütüphane gösterimi için)
+        uploads = list(ManualUpload.objects.filter(group__user=request.user).order_by('-created_at')[:30])
+        
+        # Eğer Kütüphane / AI Transferinden özel ID'ler geldiyse, eski olsalar bile listeye ekle!
+        if requested_ids:
+            req_id_list = [int(i) for i in requested_ids.split(',') if i.isdigit()]
+            extra_uploads = ManualUpload.objects.filter(id__in=req_id_list, group__user=request.user)
+            existing_ids = [u.id for u in uploads]
+            
+            for eu in extra_uploads:
+                if eu.id not in existing_ids:
+                    uploads.insert(0, eu) # Kütüphanenin en başına (yeni gibi) ekle
+                    
         data = [
-            {"id": u.id, "url": u.image.url, "name": u.original_filename} 
+            {"id": u.id, "url": u.image.url, "name": u.original_filename}
             for u in uploads
         ]
+        
         return JsonResponse({"status": "success", "designs": data})
-    return JsonResponse({"status": "error", "message": "GET gerekli"}, status=405)
+        
+    return JsonResponse({"status": "error", "message": "Sadece GET istekleri desteklenir."}, status=405)

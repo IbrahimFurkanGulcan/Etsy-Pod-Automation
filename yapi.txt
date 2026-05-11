@@ -278,6 +278,7 @@ D:.
 |   |   |       \---js
 |   |   |               config.js
 |   |   |               mockup_templates.js
+|   |   |               tshirt_history.js
 |   |   |               tshirt_pipeline1.js
 |   |   |               tshirt_pipeline2.js
 |   |   |               

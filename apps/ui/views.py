@@ -44,6 +44,11 @@ def settings_hub_view(request):
     """Genişletilmiş Ayarlar ve Yönetim Merkezi (Hub)"""
     return render(request, 'pages/app/settings/settings_home.html')
 
+@login_required(login_url='/login/')
+def asset_library_view(request):
+    """Tüm Tasarımların Yönetildiği Kütüphane Ekranı"""
+    return render(request, 'pages/app/settings/asset_library.html')
+
 @login_required(login_url='/accounts/login/')
 def settings_pipeline_view(request):
     api_creds, _ = DatabaseService.get_or_create_with_log(ApiCredential, user=request.user)
