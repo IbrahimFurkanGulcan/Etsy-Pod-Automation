@@ -5,6 +5,7 @@ Etsy'de çok satan (Best-Seller) Print-on-Demand (POD) ürünlerini analiz edere
 Çift yönlü (Dual) Pipeline mimarisi sayesinde ister yapay zekanın sıfırdan ürettiği tasarımları, isterseniz kendi kütüphanenizdeki mevcut görselleri saniyeler içinde satışa hazır hale getirebilirsiniz.
 
 ---
+<img width="2522" height="1386" alt="Image" src="https://github.com/user-attachments/assets/49854887-9ab6-4b93-885e-c33d56a18fd7" />
 
 # 🌟 NEDEN BU PROJE?
 
@@ -22,25 +23,35 @@ Analizden üretime, mockuptan SEO'ya kadar tüm POD süreçlerini tek bir merkez
 
 ## 🔄 Dual-Pipeline Mimarisi
 
+<img width="2556" height="1395" alt="Image" src="https://github.com/user-attachments/assets/71e28c98-8414-4122-b449-593b4f5f8cc6" />
+
 ### Pipeline 1 — AI Generative & Scraper
 
 - Etsy URL'si üzerinden Playwright ile rakip ürün analizi yapar.
 - Görüntülenme, favori, başlık gibi verileri toplar.
+<img width="2549" height="1384" alt="Image" src="https://github.com/user-attachments/assets/a05df9b3-ea1d-4156-9757-85916d232fc0" />
 - Ürün üzerindeki tasarımı izole eder.
-- Seçilen AI modelleri (Flux, SD vb.) ile yeni varyasyonlar üretir.
+- Seçilen AI modelleri (Flux, Seadream vb.) ile yeni varyasyonlar üretir.
+<img width="2532" height="1389" alt="Image" src="https://github.com/user-attachments/assets/cc1ff52b-609e-46c3-bffe-c9abbe239af4" />
 - Üretilen tasarımların arka planları otomatik olarak silinir.
 - Seçilen şablonlara göre otomatik mockuplama yapar.
+<img width="2540" height="1390" alt="Image" src="https://github.com/user-attachments/assets/1af8d4e2-2f9e-4b6a-9b21-bd37677ed160" />
 - Orijinal tasarımda kullanılan tag-title ı referans alarak seo üretir.
+<img width="2527" height="1388" alt="Image" src="https://github.com/user-attachments/assets/e9502ca5-d1d9-45cb-8993-349bb6380f67" />
 - Tüm üretimi transparan tasarım-seo -texti ve mockuplanmış görseller klasörü içeren bir klasör şeklinde indirir.
+
 
 ### Pipeline 2 — Batch Processing & Mockup Orchestration
 
 - Manuel olarak tasarım yüklenmesine olanak sağlar.
+<img width="2537" height="1380" alt="Image" src="https://github.com/user-attachments/assets/6b8f6121-8fa3-4dcd-bd3a-3770c6094774" />
 - Tasarım kütüphanesindeki şeffaf PNG'leri veya P1’den transfer edilen görselleri toplu işler.
 - Seçilen mockup şablonlarıyla eşleştirir.
-- Tek tıkla yüzlerce profesyonel mockup üretir.
+<img width="2416" height="1331" alt="Image" src="https://github.com/user-attachments/assets/5342615c-3f0e-40e0-bd5d-5068d737eb4c" />
+- Tek tıkla onlarca profesyonel mockup üretir.
 - Transparak görselleri vision-ai ile analiz eder.
 - Vision-ai analiz çıktısını referans alarak seo üretir.
+<img width="2526" height="1368" alt="Image" src="https://github.com/user-attachments/assets/98c67a4e-ba9f-472f-8668-9fa024749aa3" />
 - Tüm üretimi transparan tasarım-seo -texti ve mockuplanmış görseller klasörü içeren bir klasör şeklinde indirir.
 
 ---
@@ -50,18 +61,24 @@ Analizden üretime, mockuptan SEO'ya kadar tüm POD süreçlerini tek bir merkez
 ## 🎨 Tasarım Kütüphanesi (Asset Library)
 
 - Üretilen veya manuel yüklenen tüm tasarımların merkezi depolama alanı.
+<img width="2500" height="1379" alt="Image" src="https://github.com/user-attachments/assets/9da56894-8b00-427e-a5b8-bc240a015a3f" />
 - Tasarımlar tek tıkla pipeline'lara yönlendirilebilir.
+<img width="2559" height="1389" alt="Image" src="https://github.com/user-attachments/assets/67a0d8cd-c4a0-47c5-9019-3df6e05b4905" />
 
 ## 🖼️ Mockup Şablon Merkezi
 
 - Boş mockup görsellerinizi sisteme yükleyip yönetebilirsiniz.
 - Dinamik şablon havuzu desteği sunar.
+<img width="2513" height="1347" alt="Image" src="https://github.com/user-attachments/assets/262758a7-74b2-4368-9861-53635bf6791e" />
+<img width="2538" height="1384" alt="Image" src="https://github.com/user-attachments/assets/ef26a1c0-6901-438e-9c5d-20ecb495673f" />
+<img width="2003" height="1373" alt="Image" src="https://github.com/user-attachments/assets/928e3f22-b543-4c7e-bfad-89df7e838220" />
 
 ## 🕘 Geçmiş Analizler (History)
 
 - Daha önce analiz edilen Etsy linkleri ve yapılan üretimler saklanır.
 - Daha önce manuel olarak yüklenen tasarımlardan yapılan üretimler saklanır.
 - Rakip verileri ve üretilen tasarımlar tek tıkla geri çağrılabilir.
+<img width="2524" height="1383" alt="Image" src="https://github.com/user-attachments/assets/704d3803-5039-48ee-8dfe-206fb954fb3b" />
 
 ## ⚙️ Dinamik Ayarlar (Config)
 
@@ -72,6 +89,8 @@ Arayüz üzerinden:
 - Aktif AI modelleri
 
 kod yazmadan yönetilebilir.
+<img width="1963" height="1379" alt="Image" src="https://github.com/user-attachments/assets/ac39152f-52ac-404b-87a8-cf5819aa3423" />
+<img width="1955" height="1380" alt="Image" src="https://github.com/user-attachments/assets/516cee08-b470-4eb7-85fc-fb5d75516ec4" />
 
 ---
 
@@ -100,7 +119,8 @@ GPT-4o destekli SEO sistemi:
 - SEO metinleri
 
 otomatik klasörlenmiş ZIP arşivi olarak indirilebilir.
-
+<img width="829" height="523" alt="Image" src="https://github.com/user-attachments/assets/b795eae9-8fba-4617-a9c2-0778874ff292" />
+<img width="2034" height="1263" alt="Image" src="https://github.com/user-attachments/assets/cfa52f1a-deae-4b52-996e-85eb299e7576" />
 ---
 
 # 🎥 SİSTEM NASIL ÇALIŞIYOR?
