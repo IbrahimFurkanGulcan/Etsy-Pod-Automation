@@ -5,7 +5,7 @@ certifi==2025.11.12
 cffi==2.0.0
 charset-normalizer==3.4.4
 cryptography==47.0.0
-Django==6.0
+Django==5.2.14
 greenlet==3.3.0
 h11==0.16.0
 httpcore==1.0.9
