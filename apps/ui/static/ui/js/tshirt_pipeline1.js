@@ -41,13 +41,18 @@ function restoreFromStorage() {
     });
 
     // 2. Temel verileri (URL ve Analiz) geri yükle
-    if (savedUrls) {
-        const urlContainer = document.getElementById('url-inputs-container');
-        if (urlContainer) {
-            urlContainer.innerHTML = '';
+    const urlContainer = document.getElementById('url-inputs-container');
+    if (urlContainer) {
+        urlContainer.innerHTML = ''; // Önce container'ı temizle
+        if (savedUrls && savedUrls.length > 0) {
+            // Hafızada URL varsa onları çiz
             savedUrls.forEach((url, index) => addUrlField(url, index === 0));
+        } else {
+            // Hafıza boşsa (veya ekran yeni temizlendiyse) 1 tane varsayılan boş alan ekle
+            addUrlField("", true);
         }
     }
+    
     if (savedAnalysis) renderAnalysisResults(savedAnalysis);
 
     // 3. Sayfa geçişini ve içerik üretimini yap
@@ -199,8 +204,15 @@ async function analyzeProduct() {
 
 function clearSession() {
     if(confirm("Tüm girişleri ve analiz sonuçlarını silmek istediğinize emin misiniz?")) {
+        // Tüm Pipeline 1 önbellek verilerini kökten temizle
+        localStorage.removeItem('current_page');
         localStorage.removeItem('last_etsy_urls');
         localStorage.removeItem('last_analysis_results');
+        localStorage.removeItem('last_generated_results');
+        localStorage.removeItem('mockup_mapping');
+        localStorage.removeItem('mockup_results_cache');
+        localStorage.removeItem('seo_results_cache');
+        
         // Sayfayı yenileyerek her şeyi ilk haline döndür
         window.location.reload();
     }
