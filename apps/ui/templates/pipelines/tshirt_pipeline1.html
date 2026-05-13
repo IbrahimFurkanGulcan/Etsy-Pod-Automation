@@ -1,0 +1,215 @@
+{% extends 'layouts/app_base.html' %}
+{% load static %}
+
+{% block title %}Tişört Üretim Hattı 1 - Rakip Analizi{% endblock %}
+{% block page_title %}Tişört: Rakip Analizi ve AI Üretim Hattı{% endblock %}
+{% block nav_pipeline1 %}bg-slate-800 text-white{% endblock %}
+
+{% block content %}
+<!-- CSRF Token'ı JS'in alabilmesi için gizli bir input olarak bırakıyoruz -->
+{% csrf_token %}
+
+<div class="max-w-6xl mx-auto space-y-8 pb-20">
+
+    <!-- ========================================================= -->
+    <!-- ADIM 1: ANALİZ ALANI                                      -->
+    <!-- ========================================================= -->
+    <section id="page-analyze" class="space-y-6">
+        
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-3">
+                <label class="text-sm font-semibold text-slate-700">
+                    <i class="fa-solid fa-link text-orange-500 mr-2"></i>Analiz edilecek Etsy linklerini girin:
+                </label>
+                <button onclick="clearSession()" class="text-xs text-slate-400 hover:text-red-500 transition flex items-center gap-1">
+                    <i class="fa-solid fa-trash-can"></i> Ekranı Temizle
+                </button>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 items-start">
+                <div id="url-inputs-container" class="flex-grow space-y-3 w-full">
+                    </div>
+
+                <button id="btn-analyze" onclick="analyzeProduct()" 
+                    class="bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 rounded-lg transition shadow-sm flex items-center justify-center gap-2 h-12 whitespace-nowrap flex-shrink-0">
+                    <i class="fa-solid fa-magnifying-glass"></i> Analiz Et
+                </button>
+            </div>
+            
+            <div id="error-message" class="hidden mt-4 p-4 bg-red-50 text-red-600 rounded-lg border border-red-100 text-sm flex items-center">
+                <i class="fa-solid fa-circle-exclamation text-lg mr-2"></i> <span id="error-text">Veri bulunamadı.</span>
+            </div>
+        </div> <div id="loading-analyze" class="hidden flex flex-col items-center justify-center py-12 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-orange-500 mb-4"></i>
+            <p class="text-slate-500 font-medium">Veritabanından ürün bilgileri çekiliyor...</p>
+        </div>
+
+        <div id="analyze-results-container" class="hidden space-y-6 transition-all duration-500">
+        </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ADIM 2: ÜRETİM VE İŞLEME ALANI (Başlangıçta Gizli)        -->
+    <!-- ========================================================= -->
+    <section id="page-generate" class="hidden space-y-6">
+        
+        <button onclick="goToAnalyzePage()" class="text-slate-500 hover:text-indigo-600 font-medium transition flex items-center gap-2 mb-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 w-fit">
+            <i class="fa-solid fa-arrow-left"></i> Analiz Ekranına Dön
+        </button>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2"><i class="fa-regular fa-images text-indigo-500"></i> AI Varyasyonları</h2>
+            <p class="text-sm text-slate-500 mb-6 pb-4 border-b border-slate-100">Orijinal tasarımdan ilham alınarak üretilen varyasyonlar.</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="generated-images-container">
+                <!-- Tasarımlar JS ile buraya dolacak -->
+            </div>
+            
+            <div class="mt-6 p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
+            
+                <div class="flex items-center gap-3">
+                    <label class="text-sm font-bold text-slate-700">İşlem Sırası:</label>
+                    <select id="process-order" class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 shadow-sm">
+                        <option value="upscale_first">1. Upscale -> 2. Arka Plan Sil</option>
+                        <option value="bg_first">1. Arka Plan Sil -> 2. Upscale</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center gap-3 ml-auto">
+                    <button id="btn-process-images" onclick="processSelectedImages()" 
+                        class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-gears"></i> Seçili Görselleri İşle
+                    </button>
+                    
+                    <button id="btn-go-to-mockup" onclick="goToMockupStage()" 
+                        class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg transition flex items-center gap-2 border-2 border-indigo-400">
+                        Mockup Hazırla <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        <!-- Diğer adımlar (Mockup, SEO) JS yapısı kuruldukça buraya eklenecek -->
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- ADIM 3: Mockuplama       -->
+    <!-- ========================================================= -->
+
+    <section id="page-mockup" class="hidden space-y-6">
+        <div class="flex justify-between items-center">
+            <button onclick="goToGeneratePage()" class="text-slate-500 hover:text-indigo-600 font-medium transition flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
+                <i class="fa-solid fa-arrow-left"></i> Tasarımlara Dön
+            </button>
+            <h2 class="text-xl font-bold text-slate-800">Adım 3: Mockup Oluşturma</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-orange-500"></i> Şablon Havuzu
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Aşağıdan uygulanacak tasarımları seçin (kutucuklarla), ardından buradaki şablonlara tıklayın.</p>
+                </div>
+                <button onclick="startMockupGeneration()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition flex items-center gap-2">
+                    <i class="fa-solid fa-play"></i> Mockupları Üret
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4" id="mockup-templates-grid">
+                </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-4">
+                <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic text-indigo-500"></i> İşlenmiş Tasarımlar & Seçilen Şablonlar
+                </h3>
+                <label class="flex items-center gap-2 text-sm font-bold text-slate-600 cursor-pointer hover:text-indigo-600 transition bg-slate-100 hover:bg-indigo-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <input type="checkbox" id="select-all-mockup-designs" onclick="toggleAllMockupDesigns(this)" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-5 h-5 cursor-pointer">
+                    Tümünü Seç / Temizle
+                </label>
+            </div>
+
+            <div id="mockup-designs-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2">
+                </div>
+        </div>
+        <div id="seo-button-container" class="hidden mt-6 flex justify-end border-t border-slate-200 pt-6">
+            <button id="btn-go-to-seo" onclick="goToSEOPage()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition flex items-center gap-2">
+                İleri: SEO Üret <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <section id="page-seo" class="hidden space-y-6">
+        <div class="flex justify-between items-center">
+            <button onclick="document.getElementById('page-seo').classList.add('hidden'); document.getElementById('page-mockup').classList.remove('hidden');" 
+                class="text-slate-500 hover:text-emerald-600 font-medium transition flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200">
+                <i class="fa-solid fa-arrow-left"></i> Mockuplara Dön
+            </button>
+            <h2 class="text-xl font-bold text-slate-800">Adım 4: SEO Optimizasyonu</h2>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6 pb-6 border-b border-slate-100">
+                <div>
+                    <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-tags text-emerald-500"></i> Toplu Seçim Kontrolleri
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-1">Aşağıdaki tüm tasarımların seçimlerini tek tuşla değiştirin.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="setGlobalSeoTarget('title')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-4 py-2 rounded-lg text-sm transition">Sadece Title</button>
+                    <button onclick="setGlobalSeoTarget('tags')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold px-4 py-2 rounded-lg text-sm transition">Sadece Tag</button>
+                    <button onclick="setGlobalSeoTarget('both')" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-lg text-sm transition">İkisi Birden</button>
+                    <button onclick="setGlobalSeoTarget('none')" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-4 py-2 rounded-lg text-sm transition">Hiçbiri</button>
+                </div>
+            </div>
+
+            <div id="seo-rows-container" class="space-y-4">
+                </div>
+
+            <div class="mt-8 flex justify-end border-t border-slate-100 pt-6">
+                <button id="btn-start-seo" onclick="startBatchSEO()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-10 rounded-lg shadow-md transition flex items-center gap-2 text-lg">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Seçili SEO'ları Üret
+                </button>
+            </div>
+        </div>
+        <div id="export-container" class="hidden mt-8 flex flex-col items-center bg-slate-50 rounded-xl p-8 border-2 border-dashed border-emerald-200 animate-fade-in">
+            <p class="text-sm text-slate-600 mb-4 text-center">Tüm işlemler tamamlandı! <br>Tasarımları, Mockupları ve SEO verilerini klasörlenmiş bir ZIP olarak indirebilirsiniz.</p>
+            <button id="btn-export-pipeline1" onclick="exportPipeline1()" 
+                class="bg-slate-900 hover:bg-black text-white font-bold py-4 px-12 rounded-xl transition shadow-xl flex items-center gap-3 text-lg transform hover:-translate-y-1">
+                <i class="fa-solid fa-file-zipper"></i> Tüm Projeyi İndir (ZIP)
+            </button>
+        </div>
+    </section>
+
+</div>
+
+<!-- GÖRSEL BÜYÜTME MODALI -->
+<div id="image-modal" class="fixed inset-0 bg-slate-900/95 hidden z-[100] flex items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+    <button onclick="closeModal()" class="absolute top-6 right-6 text-white/70 hover:text-white text-4xl transition focus:outline-none z-50">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+    
+    <button id="modal-prev-btn" onclick="changeCarousel(-1)" class="hidden absolute left-4 md:left-10 text-white/50 hover:text-white text-5xl transition focus:outline-none z-50 hover:scale-110">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="relative flex flex-col items-center">
+        <img id="modal-image" src="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl transition-all duration-200">
+        <div id="modal-counter" class="hidden absolute -bottom-12 text-white font-bold bg-white/10 px-4 py-1.5 rounded-full text-sm border border-white/20 backdrop-blur-md">1 / 5</div>
+    </div>
+
+    <button id="modal-next-btn" onclick="changeCarousel(1)" class="hidden absolute right-4 md:right-10 text-white/50 hover:text-white text-5xl transition focus:outline-none z-50 hover:scale-110">
+        <i class="fa-solid fa-chevron-right"></i>
+    </button>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Özel JS dosyamızı çağırıyoruz -->
+<script src="{% static 'ui/js/tshirt_pipeline1.js' %}"></script>
+{% endblock %}

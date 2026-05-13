@@ -1,0 +1,152 @@
+{% extends 'layouts/app_base.html' %}
+{% load static %}
+
+{% block title %}Mockup Koleksiyonları - Etsy AI{% endblock %}
+{% block page_title %}Mockup Koleksiyonları{% endblock %}
+{% block nav_mockup %}bg-slate-800 text-white{% endblock %} <!-- İleride sidebar'a bu bloğu ekleyeceğiz -->
+
+{% block extra_head %}
+<!-- Fabric.js kütüphanesi -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 pb-20">
+
+    <!-- ========================================== -->
+    <!-- GÖRÜNÜM 1: KOLEKSİYONLAR LİSTESİ           -->
+    <!-- ========================================== -->
+    <div id="view-collections" class="space-y-6 block">
+        <!-- Başlık ve Yeni Ekle Butonu -->
+        <div class="flex justify-between items-center mb-6 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">Mockup Koleksiyonları</h2>
+                <p class="text-sm text-slate-500 mt-1">Kendi şablonlarınızı yükleyin ve AI'ın baskı yapacağı koordinatları belirleyin.</p>
+            </div>
+            <button onclick="createNewCollection()" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-bold shadow-sm flex items-center">
+                <i class="fa-solid fa-folder-plus mr-2"></i>Yeni Koleksiyon
+            </button>
+        </div>
+
+        <!-- Koleksiyon Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for group in groups %}
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:border-indigo-300 transition group cursor-pointer" onclick="openCollection({{ group.id }})">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">{{ group.items.count }} Görsel</span>
+                </div>
+                <h3 class="font-bold text-slate-800 text-lg mb-1 truncate">{{ group.name }}</h3>
+                <p class="text-xs text-slate-500 mb-4"><i class="fa-regular fa-calendar mr-1"></i>{{ group.created_at|date:"d M Y" }}</p>
+                <button class="w-full py-2 bg-slate-50 text-indigo-600 rounded-lg font-medium text-sm group-hover:bg-indigo-50 transition border border-slate-200">
+                    Koleksiyonu Düzenle <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+            {% empty %}
+            <!-- Boş Durum -->
+            <div class="col-span-full p-12 text-center text-slate-400 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50">
+                <i class="fa-solid fa-folder-open text-5xl mb-3 opacity-50 text-indigo-300"></i>
+                <p class="text-lg font-medium text-slate-600">Henüz hiç koleksiyon oluşturmadınız.</p>
+                <p class="text-sm mt-1">Toplu işlem yapabilmek için ilk mockup setinizi oluşturun.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- GÖRÜNÜM 2: KOLEKSİYON DÜZENLEYİCİ (EDITOR) -->
+    <!-- ========================================== -->
+    <div id="view-editor" class="hidden space-y-6">
+        <button onclick="showCollectionsView()" class="text-slate-500 hover:text-indigo-600 transition font-medium flex items-center bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 w-max">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Koleksiyonlara Dön
+        </button>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <!-- Düzenleyici Üst Bar -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-slate-100 pb-6 gap-4">
+                <div class="flex-1 w-full">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Koleksiyon Adı</label>
+                    <input type="text" id="group-name-input" class="w-full text-2xl font-bold text-slate-800 border-none p-0 focus:ring-0 bg-transparent placeholder-slate-300" placeholder="Örn: Siyah Tişört Seti">
+                </div>
+                
+                <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                    <input type="file" id="mockup-upload-input" multiple accept="image/jpeg, image/png" class="hidden">
+                    <button onclick="document.getElementById('mockup-upload-input').click()" class="flex-1 md:flex-none px-4 py-2 bg-indigo-50 text-indigo-600 rounded-lg hover:bg-indigo-100 transition font-medium text-sm flex items-center justify-center border border-indigo-100">
+                        <i class="fa-solid fa-plus mr-2"></i>Görsel Ekle
+                    </button>
+                    <button onclick="applyToAllMockups()" class="flex-1 md:flex-none px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition font-medium text-sm flex items-center justify-center" title="İlk şablonun koordinatlarını diğerlerine kopyalar">
+                        <i class="fa-solid fa-copy mr-2"></i>Tümüne Uygula
+                    </button>
+                    <button onclick="saveAllToDatabase()" id="btn-save-all" class="flex-1 md:flex-none px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition font-bold text-sm shadow-sm flex items-center justify-center">
+                        <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Koleksiyonu Kaydet
+                    </button>
+                </div>
+            </div>
+
+            <!-- Yüklenen Görsellerin Listeleneceği Alan -->
+            <div id="mockup-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- JS ile Doldurulacak -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: FABRIC.JS BASKI ALANI BELİRLEME     -->
+<!-- ========================================== -->
+<div id="mockup-editor-modal" class="fixed inset-0 bg-slate-900/80 z-50 hidden flex items-center justify-center backdrop-blur-sm p-4">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col">
+        <!-- Modal Başlık -->
+        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 class="font-bold text-slate-800"><i class="fa-solid fa-crop-simple text-indigo-500 mr-2"></i>Baskı Alanını Belirle</h3>
+            <button onclick="closeEditorModal()" class="text-slate-400 hover:text-red-500 transition">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <!-- Canvas Alanı -->
+        <div class="p-6 bg-slate-100 flex-1 overflow-auto flex flex-col items-center justify-center relative">
+            <div class="shadow-lg ring-1 ring-slate-900/5 bg-white relative">
+                <canvas id="mockup-canvas"></canvas>
+            </div>
+        </div>
+        
+        <!-- Modal Alt Kontroller -->
+        <div class="bg-white px-6 py-4 border-t border-slate-100">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                
+                <div class="flex gap-2">
+                    <button onclick="makeSquare()" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition text-sm font-medium flex items-center">
+                        <i class="fa-regular fa-square mr-1.5"></i> Kare
+                    </button>
+                    <button onclick="makeCircle()" class="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 rounded hover:bg-indigo-50 hover:border-indigo-300 hover:text-indigo-600 transition text-sm font-medium flex items-center">
+                        <i class="fa-regular fa-circle mr-1.5"></i> Yuvarlak
+                    </button>
+                </div>
+
+                <div id="live-coordinates" class="text-xs font-mono text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 hidden sm:block">X: 0, Y: 0</div>
+                
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <button onclick="closeEditorModal()" class="flex-1 sm:flex-none px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600 font-medium text-sm transition">İptal</button>
+                    <button onclick="saveMockupCoordinates()" class="flex-1 sm:flex-none px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-medium text-sm shadow-sm transition flex items-center justify-center">
+                        <i class="fa-solid fa-check mr-2"></i>Alanı Onayla
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // views.py'den gelen veriler
+    const serverGroupsData = {{ groups_json|default:"[]"|safe }};
+</script>
+<!-- Kendi yazdığın mockup template JS dosyan (ui klasörüne taşımayı unutma) -->
+<script src="{% static 'ui/js/mockup_templates.js' %}"></script>
+{% endblock %}

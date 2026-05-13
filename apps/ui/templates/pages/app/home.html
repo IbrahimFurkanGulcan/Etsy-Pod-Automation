@@ -1,0 +1,57 @@
+{% extends 'layouts/app_base.html' %}
+
+{% block title %}Kategori Seçimi - Etsy AI{% endblock %}
+{% block page_title %}Hoş Geldiniz, Ne Tasarlıyoruz?{% endblock %}
+{% block nav_home %}bg-slate-800 text-white{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <p class="text-slate-500 mb-8 text-lg">Lütfen çalışmak istediğiniz ürün kategorisini seçin. Her kategorinin kendine özel yapay zeka araçları bulunmaktadır.</p>
+
+    <div class="grid md:grid-cols-2 gap-8">
+        
+        <!-- T-SHIRT KART (Aktif) -->
+        <!-- İleride href kısmını "{% url 'ui:tshirt_category' %}" yapacağız -->
+        <a href="{% url 'ui:tshirt_category' %}" class="group block relative bg-white rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 transition-all duration-300 overflow-hidden transform hover:-translate-y-1">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10 group-hover:bg-indigo-100 transition"></div>
+            <div class="p-8">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-6 shadow-sm">
+                    <i class="fa-solid fa-shirt"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-3">T-Shirt Tasarımı</h3>
+                <p class="text-slate-600 mb-6 line-clamp-2">
+                    Etsy'deki T-Shirt linklerini analiz edin, yapay zeka ile yeni varyasyonlar üretin veya kendi tasarımlarınızı yükleyip topluca mockup giydirin.
+                </p>
+                <div class="flex items-center text-indigo-600 font-semibold group-hover:translate-x-2 transition-transform">
+                    Araçları Görüntüle <i class="fa-solid fa-arrow-right ml-2"></i>
+                </div>
+            </div>
+            <!-- Etiket -->
+            <div class="absolute top-6 right-6 bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                2 Araç Aktif
+            </div>
+        </a>
+
+        <!-- TAKI KART (Pasif / Yakında) -->
+        <div class="relative bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden opacity-75 cursor-not-allowed">
+            <div class="p-8">
+                <div class="w-16 h-16 bg-slate-200 text-slate-400 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                    <i class="fa-solid fa-gem"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-500 mb-3">Takı Tasarımı</h3>
+                <p class="text-slate-400 mb-6 line-clamp-2">
+                    Kolyeler, yüzükler ve bileklikler için özel ışıklandırma ve zincir analizine sahip yapay zeka motoru. Çok yakında hizmetinizde.
+                </p>
+                <div class="flex items-center text-slate-400 font-semibold">
+                    Çok Yakında...
+                </div>
+            </div>
+            <!-- Etiket -->
+            <div class="absolute top-6 right-6 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm border border-slate-300">
+                Geliştirme Aşamasında
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

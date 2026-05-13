@@ -1,0 +1,80 @@
+{% extends 'layouts/visitor_base.html' %}
+
+{% block content %}
+<!-- HERO BÖLÜMÜ (Karşılama Ekranı) -->
+<section class="bg-gradient-to-b from-orange-50 to-white py-24">
+    <div class="container mx-auto px-6 max-w-5xl text-center">
+        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+            Etsy Mağazanız İçin <br/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">
+                Uçtan Uca Tasarım Otomasyonu
+            </span>
+        </h1>
+        <p class="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+            Rakip analizi, yapay zeka ile görsel üretimi, toplu mockup giydirme ve 
+            otomatik SEO araçlarıyla üretim hızınızı 10 katına çıkarın.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            {% if request.user.is_authenticated %}
+                <!-- GİRİŞ YAPMIŞ KULLANICI İÇİN -->
+                <a href="{% url 'ui:app_home' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-layer-group"></i> Panelinize Dönün
+                </a>
+            {% else %}
+                <!-- ZİYARETÇİ İÇİN -->
+                <a href="{% url 'accounts:register' %}" class="bg-orange-600 hover:bg-orange-700 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 flex items-center justify-center">
+                    Sisteme Katılın <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+                <a href="{% url 'accounts:login' %}" class="bg-white hover:bg-gray-50 text-gray-800 border-2 border-gray-200 text-lg font-bold py-4 px-10 rounded-xl shadow-sm transition flex items-center justify-center">
+                    Zaten Hesabım Var
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ÖZELLİKLER BÖLÜMÜ -->
+<section id="features" class="py-20 bg-white border-t border-gray-100">
+    <div class="container mx-auto px-6 max-w-7xl">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900">Neden Etsy AI Kullanmalısınız?</h2>
+            <p class="text-gray-500 mt-4 text-lg">Modüler mimarimiz sayesinde iş akışınızı tamamen siz belirlersiniz.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+            <!-- Kart 1 -->
+            <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">Yapay Zeka Üretimi</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Etsy linklerini analiz edin. Sistemimiz rakipleri inceler ve o nişe uygun mükemmel, transparan grafikler üretir.
+                </p>
+            </div>
+
+            <!-- Kart 2 -->
+            <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">Toplu Mockup Motoru</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Kendi şablonlarınızı yükleyin. Özel OpenCV algoritmamızla tasarımlarınız kumaş kıvrımlarına kusursuzca otursun.
+                </p>
+            </div>
+
+            <!-- Kart 3 -->
+            <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-xl transition duration-300 group">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition">
+                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3 text-gray-800">Vision AI & SEO</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Görselinizi GPT-4 Vision'a analiz ettirip, Etsy algoritmasının bayılacağı başlık ve etiketleri saniyeler içinde alın.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

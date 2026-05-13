@@ -1,0 +1,57 @@
+{% extends 'layouts/app_base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-2xl font-extrabold text-slate-800"><i class="fa-solid fa-clock-rotate-left text-indigo-500 mr-2"></i> İşlem Geçmişi & Kütüphane</h1>
+        <p class="text-slate-500 text-sm mt-1">Önceki analizlerinizi inceleyin ve seçtiklerinizi tek tuşla indirin.</p>
+    </div>
+
+    <div class="flex border-b border-slate-200 mb-6">
+        <button onclick="switchTab('p1')" id="btn-tab-p1" class="px-6 py-3 font-bold text-sm border-b-2 border-indigo-600 text-indigo-600 transition">Pipeline 1 (Etsy AI)</button>
+        <button onclick="switchTab('p2')" id="btn-tab-p2" class="px-6 py-3 font-bold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition">Pipeline 2 (Manuel Üretim)</button>
+    </div>
+
+    <div id="tab-p1" class="block">
+        <div class="flex justify-between items-center mb-4">
+            <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer"><input type="checkbox" id="selectAllP1" onclick="toggleAll('p1')" class="mr-2 rounded text-indigo-600"> Tümünü Seç</label>
+            <button onclick="exportSelected('p1')" id="export-btn-p1" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow"><i class="fa-solid fa-download mr-2"></i> Seçilenleri İndir (ZIP)</button>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase">
+                    <tr><th class="p-4 w-12"></th><th class="p-4">Orijinal (Etsy)</th><th class="p-4">AI Tasarım</th><th class="p-4">Mockuplar</th><th class="p-4">SEO Verisi</th></tr>
+                </thead>
+                <tbody id="p1-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tab-p2" class="hidden">
+        <div class="flex justify-between items-center mb-4">
+            <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer"><input type="checkbox" id="selectAllP2" onclick="toggleAll('p2')" class="mr-2 rounded text-indigo-600"> Tümünü Seç</label>
+            <button onclick="exportSelected('p2')" id="export-btn-p2" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-bold text-sm transition shadow"><i class="fa-solid fa-download mr-2"></i> Seçilenleri İndir (ZIP)</button>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 border-b border-slate-200 text-xs text-slate-500 uppercase">
+                    <tr><th class="p-4 w-12"></th><th class="p-4">Yüklenen Tasarım</th><th class="p-4">Mockuplar</th><th class="p-4">SEO Verisi</th></tr>
+                </thead>
+                <tbody id="p2-tbody" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="history-modal" class="fixed inset-0 z-50 hidden bg-slate-900/90 backdrop-blur-sm flex items-center justify-center transition-opacity opacity-0">
+        <button onclick="closeHistoryCarousel()" class="absolute top-6 right-6 text-white hover:text-red-400 text-3xl"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="changeHistoryCarousel(-1)" id="modal-prev-btn" class="absolute left-6 text-white hover:text-indigo-400 text-5xl"><i class="fa-solid fa-chevron-left"></i></button>
+        <img id="history-modal-image" src="" class="max-h-[85vh] max-w-[85vw] object-contain rounded-lg shadow-2xl">
+        <button onclick="changeHistoryCarousel(1)" id="modal-next-btn" class="absolute right-6 text-white hover:text-indigo-400 text-5xl"><i class="fa-solid fa-chevron-right"></i></button>
+        <div id="history-modal-counter" class="absolute bottom-6 text-white font-bold tracking-widest bg-slate-800/50 px-4 py-2 rounded-full"></div>
+    </div>
+    
+    <script src="{% static 'ui/js/tshirt_history.js' %}"></script>
+</div>
+{% endblock %}
+

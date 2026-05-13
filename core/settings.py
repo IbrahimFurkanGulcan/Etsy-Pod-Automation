@@ -38,7 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'manager',  # <--- Burayı ekliyoruz (sonuna virgül koymayı unutma)
+    'manager', # <--- Burayı ekliyoruz (sonuna virgül koymayı unutma)
+  
+    # ... django apps ...
+    'apps.accounts',
+    'apps.etsy',
+    'apps.common',
+    'apps.ai',
+    'apps.image_processor',
+    'apps.products',
+    'apps.ui',
+    
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -119,10 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 
-# --- BU SATIRI EKLİYORUZ ---
-STATICFILES_DIRS = [
-    BASE_DIR / "static", 
-]
+
 
 
 # Medya dosyalarının URL adresi (Tarayıcıda görünecek kısım)
@@ -139,3 +148,5 @@ print(f"📂 BASE_DIR (Proje Ana Dizini): {BASE_DIR}")
 print(f"📂 MEDIA_ROOT (Resimlerin Yeri): {MEDIA_ROOT}")
 print(f"🔗 MEDIA_URL (Tarayıcı Linki): {MEDIA_URL}")
 print("="*30 + "\n")
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 262144000

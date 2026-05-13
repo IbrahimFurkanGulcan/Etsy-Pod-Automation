@@ -1,0 +1,59 @@
+{% extends 'layouts/visitor_base.html' %}
+
+{% block title %}Giriş Yap | Etsy AI{% endblock %}
+
+{% block nav_actions %}
+    <a href="{% url 'ui:landing' %}" class="text-sm font-medium text-gray-500 hover:text-indigo-600 transition flex items-center">
+        <i class="fa-solid fa-arrow-left mr-2"></i> Ana Sayfaya Dön
+    </a>
+{% endblock %}
+
+{% block nav_links %}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh] py-10 bg-slate-50">
+    <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md mx-auto mb-4">
+                <i class="fa-solid fa-microchip text-2xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900">Tekrar Hoş Geldiniz</h1>
+            <p class="text-sm text-slate-500 mt-1">İş akışınıza devam etmek için giriş yapın.</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4 border border-red-100 text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'accounts:login' %}" class="space-y-5">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Kullanıcı Adı</label>
+                <input type="text" name="username" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-shadow">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Şifre</label>
+                <input type="password" name="password" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition-shadow">
+            </div>
+            
+            <div class="flex items-center justify-between mb-6">
+                <label class="flex items-center text-sm text-gray-600 cursor-pointer">
+                    <input type="checkbox" name="remember_me" class="mr-2 rounded text-orange-500 focus:ring-orange-500 border-gray-300">
+                    <span class="font-medium">Beni Hatırla</span>
+                </label>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-medium transition-colors shadow-sm">
+                Giriş Yap
+            </button>
+        </form>
+        <p class="text-center text-sm text-slate-500 mt-6">
+            Hesabınız yok mu? <a href="{% url 'accounts:register' %}" class="text-indigo-600 hover:underline font-medium">Hemen Üye Olun</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

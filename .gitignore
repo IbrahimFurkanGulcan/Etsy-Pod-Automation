@@ -1,18 +1,23 @@
-# Çevresel değişkenler ve gizli şifreler
-.env
-manager/.env
-
-# Python sanal ortam klasörleri (Yüksek boyutlu dosyalar)
-venv/
-manager/venv/
-
-# Python önbellek dosyaları
+# Python / Django
 __pycache__/
-*.pyc
-*/__pycache__/
-
-# Yerel Veritabanı
+*.py[cod]
+*$py.class
+*.sqlite3
 db.sqlite3
 
-# Üretilen medya dosyaları ve görseller
+# Çevresel Değişkenler ve Güvenlik
+.env
+
+# Sanal Ortamlar
+venv/
+env/
+
+# Medya ve Statik Dosyalar (Kullanıcı Üretimleri GitHub'a Gitmesin)
 media/
+assets/
+apps/ui/static/media/
+
+# IDE Dosyaları
+.vscode/
+.idea/
+.DS_Store
