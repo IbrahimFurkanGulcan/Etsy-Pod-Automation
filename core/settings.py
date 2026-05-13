@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'manager', # <--- Burayı ekliyoruz (sonuna virgül koymayı unutma)
-  
+    
     # ... django apps ...
     'apps.accounts',
     'apps.etsy',
