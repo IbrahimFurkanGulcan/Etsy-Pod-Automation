@@ -111,7 +111,11 @@ def generate_designs_action(request):
 
                     crop_path = product.cropped_image.path if product.cropped_image else product.image_url
 
-                    new_designs = DesignGeneratorService.generate_multiple_designs_parallel(...)
+                    new_designs = DesignGeneratorService.generate_multiple_designs_parallel(product.id, 
+                                                                                            models_to_trigger, 
+                                                                                            crop_path, 
+                                                                                            api_key
+                    )
 
                     for d in new_designs:
                         if d and d.generated_image:
@@ -141,6 +145,7 @@ def generate_designs_action(request):
             return JsonResponse({"status": "success", "data": all_results})
 
         except Exception as e:
+            traceback.print_exc()
             return JsonResponse({"status": "error", "message": str(e)}, status=500)
             
     return JsonResponse({"status": "error", "message": "Geçersiz metod."}, status=405)

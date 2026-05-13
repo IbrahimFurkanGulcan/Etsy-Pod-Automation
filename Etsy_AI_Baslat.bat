@@ -1,53 +1,48 @@
 @echo off
-title Etsy AI Design Automation - Baslatici
-color 0A
+TITLE Etsy AI Design Automator - Akilli Baslatici
+COLOR 0B
 
-echo ===================================================
-echo     Etsy AI Design Automation'a Hos Geldiniz!
-echo ===================================================
-echo.
+echo ======================================================
+echo    --- Etsy AI Design Automator Baslatiliyor ---
+echo ======================================================
 
-:: Python yüklü mü kontrol et
+:: 1. Python Kontrolu
 python --version >nul 2>&1
-IF %ERRORLEVEL% NEQ 0 (
-    echo [HATA] Python bilgisayarinizda yuklu degil! 
-    echo Lutfen python.org adresinden Python'i indirin ve kurarken "Add to PATH" secenegini isaretleyin.
+if %errorlevel% neq 0 (
+    echo [HATA] Python yuklu degil veya PATH'e eklenmemis!
     pause
-    exit
+    exit /b
 )
 
-:: Sanal ortam (venv) var mı kontrol et, yoksa İLK KURULUMU yap
-IF NOT EXIST "venv\Scripts\activate.bat" (
-    echo [SISTEM] Ilk kurulum yapiliyor. Bu islem internet hizina bagli olarak birkac dakika surebilir...
-    echo [1/4] Sanal ortam olusturuluyor...
+:: 2. Sanal Ortam (venv) Kontrolu ve Olusturma
+if not exist "venv" (
+    echo [BILGI] Sanal ortam bulunamadi. Olusturuluyor...
     python -m venv venv
-    
-    echo [2/4] Kutuphaneler indiriliyor...
-    call venv\Scripts\activate
-    pip install -r requirements.txt
-    
-    echo [3/4] Playwright tarayici motoru kuruluyor...
-    playwright install chromium
-    
-    echo [4/4] Veritabani hazirlaniyor...
-    python manage.py migrate
-    
-    echo [SISTEM] Kurulum basariyla tamamlandi!
-) ELSE (
-    echo [SISTEM] Sistem hazir, sanal ortam aktif ediliyor...
-    call venv\Scripts\activate
+    echo [OK] Sanal ortam olusturuldu.
 )
 
-echo.
-echo [BASARILI] Sunucu baslatiliyor... Lutfen bu siyah pencereyi KAPATMAYIN!
-echo Uygulama tarayicinizda otomatik olarak acilacaktir...
-echo.
+:: 3. Sanal Ortami Aktif Etme
+call venv\Scripts\activate
 
-:: Tarayıcıyı 2 saniye gecikmeyle otomatik aç (Sunucunun ayaklanmasını beklemek için)
-timeout /t 2 /nobreak >nul
-start http://127.0.0.1:8000/login/
+:: 4. Kutuphaneleri Guncelleme
+echo [1/4] Kutuphaneler kontrol ediliyor...
+pip install -r requirements.txt --quiet
 
-:: Django sunucusunu ayağa kaldır
+:: 5. Playwright Kurulumu
+echo [2/4] Tarayici motoru kontrol ediliyor...
+playwright install chromium
+
+:: 6. Veritabani Gocleri (Migration)
+echo [3/4] Veritabani yapisi guncelleniyor...
+python manage.py makemigrations --noinput
+python manage.py migrate --noinput
+
+:: 7. Tarayiciyi Ac ve Sunucuyu Baslat
+echo [4/4] Sistem hazir! Tarayici aciliyor...
+start http://127.0.0.1:8000
+
+echo ======================================================
+echo    --- Sunucu aktif. Kapatmak icin pencereyi kapatin ---
+echo ======================================================
 python manage.py runserver
-
 pause
